@@ -1,65 +1,42 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { Package } from './packages.entity';
-import { promises as fs } from 'fs';
-import * as path from 'path';
-
-const DB_PATH = path.resolve(__dirname, '../../db.json');
-
-async function readDb(): Promise<Package[]> {
-  try {
-    const data = await fs.readFile(DB_PATH, 'utf-8');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
-}
-
-async function writeDb(packages: Package[]): Promise<void> {
-  await fs.writeFile(DB_PATH, JSON.stringify(packages, null, 2), 'utf-8');
-}
 
 @Injectable()
 export class PackagesService {
+  constructor(
+    @InjectModel(Package.name) private packageModel: Model<Package>,
+  ) {}
+
   async create(createPackageDto: CreatePackageDto): Promise<Package> {
-    const packages = await readDb();
-    const newPackage: Package = {
-      ...createPackageDto,
-      _id: (Math.random() + Date.now()).toString(36),
-    } as Package;
-    packages.push(newPackage);
-    await writeDb(packages);
-    return newPackage;
+    const newPackage = new this.packageModel(createPackageDto);
+    return newPackage.save();
   }
 
   async findAll(): Promise<Package[]> {
-    return readDb();
+    return this.packageModel.find().exec();
   }
 
   async findOne(id: string): Promise<Package | null> {
-    const packages = await readDb();
-    return packages.find((pkg) => pkg._id === id) || null;
+    return this.packageModel.findById(id).exec();
   }
 
   async update(
     id: string,
     updatePackageDto: CreatePackageDto,
   ): Promise<Package | null> {
-    const packages = await readDb();
-    const idx = packages.findIndex((pkg) => pkg._id === id);
-    if (idx === -1) return null;
-    packages[idx] = { ...packages[idx], ...updatePackageDto };
-    await writeDb(packages);
-    return packages[idx];
+    return this.packageModel
+      .findByIdAndUpdate(id, updatePackageDto, { new: true })
+      .exec();
   }
 
   async remove(id: string): Promise<void> {
-    const packages = await readDb();
-    const idx = packages.findIndex((pkg) => pkg._id === id);
-    if (idx === -1) throw new NotFoundException('Package not found');
-    packages.splice(idx, 1);
-    await writeDb(packages);
+    const result = await this.packageModel.deleteOne({ _id: id }).exec();
+    if (result.deletedCount === 0) {
+      throw new NotFoundException('Package not found');
+    }
   }
 
   async calculateProfit(id: string): Promise<any> {
