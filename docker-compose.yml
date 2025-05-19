@@ -8,5 +8,26 @@ services:
     volumes:
       - mongodb_data:/data/db
 
+  app:
+    build:
+      context: .
+      target: development
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/accounting
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /usr/src/app/src
+        - action: rebuild
+          path: package.json
+
 volumes:
   mongodb_data:
