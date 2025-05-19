@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreatePackageDto } from './dto/create-package.dto';
+import { CreatePackageDto } from './dto/request/create-package.dto';
 import { Package } from './packages.entity';
 
 @Injectable()

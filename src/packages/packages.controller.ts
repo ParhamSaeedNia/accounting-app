@@ -8,7 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { PackagesService } from './packages.service';
-import { CreatePackageDto } from './dto/create-package.dto';
+import { CreatePackageDto } from './dto/request/create-package.dto';
 import { Package } from './packages.entity';
 import {
   ApiOperation,
