@@ -9,4 +9,5 @@ services:
     depends_on:
       - mongodb
     environment:
+      - NODE_ENV=production
       - MONGODB_URI=mongodb://mongodb:27017/accounting
