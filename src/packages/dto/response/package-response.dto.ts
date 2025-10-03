@@ -1,23 +1,30 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Schema({ timestamps: true })
-export class Package extends Document {
-  @ApiProperty()
-  @Prop({ required: true })
+export class PackageResponseDto {
+  @ApiProperty({
+    example: '507f1f77bcf86cd799439011',
+    description: 'The unique identifier of the package',
+  })
+  _id: string;
+
+  @ApiProperty({
+    example: 'Premium Package',
+    description: 'The name of the package',
+  })
   packageName: string;
 
-  @ApiProperty()
-  @Prop({ required: true })
+  @ApiProperty({
+    example: 1000,
+    description: 'The price of the package',
+  })
   price: number;
 
   @ApiProperty({
-    example: { infrastructure: 10, teacher: 50 },
+    example: { infrastructure: 10, teacher: 50, marketing: 20 },
+    description: 'Expense percentages by category',
     type: 'object',
     additionalProperties: { type: 'number' },
   })
-  @Prop({ type: Object, required: true })
   expenses: Record<string, number>;
 
   @ApiProperty({
@@ -32,5 +39,3 @@ export class Package extends Document {
   })
   updatedAt: Date;
 }
-
-export const PackageSchema = SchemaFactory.createForClass(Package);

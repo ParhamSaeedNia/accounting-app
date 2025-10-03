@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreatePackageDto } from './dto/request/create-package.dto';
 import { Package } from './packages.entity';
+import { PackageResponseDto } from './dto/response/package-response.dto';
+import { CalculateProfitResponseDto } from './dto/response/calculate-profit-response.dto';
 
 @Injectable()
 export class PackagesService {
@@ -10,26 +12,30 @@ export class PackagesService {
     @InjectModel(Package.name) private packageModel: Model<Package>,
   ) {}
 
-  async create(createPackageDto: CreatePackageDto): Promise<Package> {
+  async create(
+    createPackageDto: CreatePackageDto,
+  ): Promise<PackageResponseDto> {
     const newPackage = new this.packageModel(createPackageDto);
-    return newPackage.save();
+    return (await newPackage.save()) as PackageResponseDto;
   }
 
-  async findAll(): Promise<Package[]> {
-    return this.packageModel.find().exec();
+  async findAll(): Promise<PackageResponseDto[]> {
+    return (await this.packageModel.find().exec()) as PackageResponseDto[];
   }
 
-  async findOne(id: string): Promise<Package | null> {
-    return this.packageModel.findById(id).exec();
+  async findOne(id: string): Promise<PackageResponseDto | null> {
+    return (await this.packageModel
+      .findById(id)
+      .exec()) as PackageResponseDto | null;
   }
 
   async update(
     id: string,
     updatePackageDto: CreatePackageDto,
-  ): Promise<Package | null> {
-    return this.packageModel
+  ): Promise<PackageResponseDto | null> {
+    return (await this.packageModel
       .findByIdAndUpdate(id, updatePackageDto, { new: true })
-      .exec();
+      .exec()) as PackageResponseDto | null;
   }
 
   async remove(id: string): Promise<void> {
@@ -39,7 +45,7 @@ export class PackagesService {
     }
   }
 
-  async calculateProfit(id: string): Promise<any> {
+  async calculateProfit(id: string): Promise<CalculateProfitResponseDto> {
     const pkg = await this.findOne(id);
     if (!pkg) throw new NotFoundException('Package not found');
     const price = pkg.price;
