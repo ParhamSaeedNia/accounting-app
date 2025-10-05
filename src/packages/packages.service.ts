@@ -11,24 +11,24 @@ export class PackagesService {
   constructor(
     @InjectModel(Package.name) private packageModel: Model<Package>,
   ) {}
-
+  //---------------------------------------------
   async create(
     createPackageDto: CreatePackageDto,
   ): Promise<PackageResponseDto> {
     const newPackage = new this.packageModel(createPackageDto);
     return (await newPackage.save()) as PackageResponseDto;
   }
-
+  //---------------------------------------------
   async findAll(): Promise<PackageResponseDto[]> {
     return (await this.packageModel.find().exec()) as PackageResponseDto[];
   }
-
+  //---------------------------------------------
   async findOne(id: string): Promise<PackageResponseDto | null> {
     return (await this.packageModel
       .findById(id)
       .exec()) as PackageResponseDto | null;
   }
-
+  //---------------------------------------------
   async update(
     id: string,
     updatePackageDto: CreatePackageDto,
@@ -37,14 +37,14 @@ export class PackagesService {
       .findByIdAndUpdate(id, updatePackageDto, { new: true })
       .exec()) as PackageResponseDto | null;
   }
-
+  //---------------------------------------------
   async remove(id: string): Promise<void> {
     const result = await this.packageModel.deleteOne({ _id: id }).exec();
     if (result.deletedCount === 0) {
       throw new NotFoundException('Package not found');
     }
   }
-
+  //---------------------------------------------
   async calculateProfit(id: string): Promise<CalculateProfitResponseDto> {
     const pkg = await this.findOne(id);
     if (!pkg) throw new NotFoundException('Package not found');

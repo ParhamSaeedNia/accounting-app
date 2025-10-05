@@ -24,7 +24,7 @@ import {
 @Controller('teachers')
 export class TeachersController {
   constructor(private readonly teachersService: TeachersService) {}
-
+  //---------------------------------------------
   @Post()
   @ApiOperation({ summary: 'Create a new teacher' })
   @ApiCreatedResponse({
@@ -37,7 +37,7 @@ export class TeachersController {
   ): Promise<TeacherResponseDto> {
     return this.teachersService.create(createTeacherDto);
   }
-
+  //---------------------------------------------
   @Get()
   @ApiOperation({ summary: 'Get all teachers' })
   @ApiOkResponse({
@@ -47,7 +47,7 @@ export class TeachersController {
   findAll(): Promise<TeacherResponseDto[]> {
     return this.teachersService.findAll();
   }
-
+  //---------------------------------------------
   @Get('active')
   @ApiOperation({ summary: 'Get all active teachers' })
   @ApiOkResponse({
@@ -57,7 +57,7 @@ export class TeachersController {
   findActive(): Promise<TeacherResponseDto[]> {
     return this.teachersService.findActive();
   }
-
+  //---------------------------------------------
   @Get(':id')
   @ApiOperation({ summary: 'Get a teacher by ID' })
   @ApiOkResponse({
@@ -68,7 +68,7 @@ export class TeachersController {
   findOne(@Param('id') id: string): Promise<TeacherResponseDto | null> {
     return this.teachersService.findOne(id);
   }
-
+  //---------------------------------------------
   @Put(':id')
   @ApiOperation({ summary: 'Update a teacher' })
   @ApiOkResponse({
@@ -83,7 +83,7 @@ export class TeachersController {
   ): Promise<TeacherResponseDto | null> {
     return this.teachersService.update(id, updateTeacherDto);
   }
-
+  //---------------------------------------------
   @Patch(':id/activate')
   @ApiOperation({ summary: 'Activate a teacher' })
   @ApiOkResponse({
@@ -94,7 +94,7 @@ export class TeachersController {
   activate(@Param('id') id: string): Promise<TeacherResponseDto | null> {
     return this.teachersService.activate(id);
   }
-
+  //---------------------------------------------
   @Patch(':id/deactivate')
   @ApiOperation({ summary: 'Deactivate a teacher' })
   @ApiOkResponse({
@@ -105,7 +105,7 @@ export class TeachersController {
   deactivate(@Param('id') id: string): Promise<TeacherResponseDto | null> {
     return this.teachersService.deactivate(id);
   }
-
+  //---------------------------------------------
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a teacher' })
   @ApiOkResponse({

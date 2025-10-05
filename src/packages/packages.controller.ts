@@ -25,7 +25,7 @@ import {
 @Controller('packages')
 export class PackagesController {
   constructor(private readonly packagesService: PackagesService) {}
-
+  //---------------------------------------------
   @Post()
   @ApiOperation({ summary: 'Create a new package' })
   @ApiCreatedResponse({
@@ -38,7 +38,7 @@ export class PackagesController {
   ): Promise<PackageResponseDto> {
     return this.packagesService.create(createPackageDto);
   }
-
+  //---------------------------------------------
   @Get()
   @ApiOperation({ summary: 'Get all packages' })
   @ApiOkResponse({
@@ -48,7 +48,7 @@ export class PackagesController {
   findAll(): Promise<PackageResponseDto[]> {
     return this.packagesService.findAll();
   }
-
+  //---------------------------------------------
   @Get(':id')
   @ApiOperation({ summary: 'Get a package by ID' })
   @ApiOkResponse({
@@ -59,7 +59,7 @@ export class PackagesController {
   findOne(@Param('id') id: string): Promise<PackageResponseDto | null> {
     return this.packagesService.findOne(id);
   }
-
+  //---------------------------------------------
   @Put(':id')
   @ApiOperation({ summary: 'Update a package' })
   @ApiOkResponse({
@@ -74,7 +74,7 @@ export class PackagesController {
   ): Promise<PackageResponseDto | null> {
     return this.packagesService.update(id, updatePackageDto);
   }
-
+  //---------------------------------------------
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a package' })
   @ApiOkResponse({
@@ -89,7 +89,7 @@ export class PackagesController {
       statusCode: 200,
     };
   }
-
+  //---------------------------------------------
   @Get(':id/calculate')
   @ApiOperation({ summary: 'Calculate profit for a package' })
   @ApiOkResponse({

@@ -26,7 +26,7 @@ import {
 @Controller('sessions')
 export class SessionsController {
   constructor(private readonly sessionsService: SessionsService) {}
-
+  //---------------------------------------------
   @Post()
   @ApiOperation({ summary: 'Create a new session' })
   @ApiCreatedResponse({
@@ -39,7 +39,7 @@ export class SessionsController {
   ): Promise<SessionResponseDto> {
     return this.sessionsService.create(createSessionDto);
   }
-
+  //---------------------------------------------
   @Get()
   @ApiOperation({ summary: 'Get all sessions' })
   @ApiOkResponse({
@@ -49,7 +49,7 @@ export class SessionsController {
   findAll(): Promise<SessionResponseDto[]> {
     return this.sessionsService.findAll();
   }
-
+  //---------------------------------------------
   @Get('confirmed')
   @ApiOperation({ summary: 'Get all confirmed sessions' })
   @ApiOkResponse({
@@ -59,7 +59,7 @@ export class SessionsController {
   findConfirmed(): Promise<SessionResponseDto[]> {
     return this.sessionsService.findConfirmed();
   }
-
+  //---------------------------------------------
   @Get('by-teacher/:teacherId')
   @ApiOperation({ summary: 'Get sessions by teacher' })
   @ApiOkResponse({
@@ -72,7 +72,7 @@ export class SessionsController {
   ): Promise<SessionResponseDto[]> {
     return this.sessionsService.findByTeacher(teacherId);
   }
-
+  //---------------------------------------------
   @Get('by-package/:packageId')
   @ApiOperation({ summary: 'Get sessions by package' })
   @ApiOkResponse({
@@ -85,7 +85,7 @@ export class SessionsController {
   ): Promise<SessionResponseDto[]> {
     return this.sessionsService.findByPackage(packageId);
   }
-
+  //---------------------------------------------
   @Get('by-date-range')
   @ApiOperation({ summary: 'Get sessions by date range' })
   @ApiOkResponse({
@@ -103,7 +103,7 @@ export class SessionsController {
       new Date(endDate),
     );
   }
-
+  //---------------------------------------------
   @Get(':id')
   @ApiOperation({ summary: 'Get a session by ID' })
   @ApiOkResponse({
@@ -114,7 +114,7 @@ export class SessionsController {
   findOne(@Param('id') id: string): Promise<SessionResponseDto | null> {
     return this.sessionsService.findOne(id);
   }
-
+  //---------------------------------------------
   @Put(':id')
   @ApiOperation({ summary: 'Update a session' })
   @ApiOkResponse({
@@ -129,7 +129,7 @@ export class SessionsController {
   ): Promise<SessionResponseDto | null> {
     return this.sessionsService.update(id, updateSessionDto);
   }
-
+  //---------------------------------------------
   @Patch(':id/confirm')
   @ApiOperation({ summary: 'Confirm a session' })
   @ApiOkResponse({
@@ -140,7 +140,7 @@ export class SessionsController {
   confirm(@Param('id') id: string): Promise<SessionResponseDto | null> {
     return this.sessionsService.confirm(id);
   }
-
+  //---------------------------------------------
   @Patch(':id/unconfirm')
   @ApiOperation({ summary: 'Unconfirm a session' })
   @ApiOkResponse({
@@ -151,7 +151,7 @@ export class SessionsController {
   unconfirm(@Param('id') id: string): Promise<SessionResponseDto | null> {
     return this.sessionsService.unconfirm(id);
   }
-
+  //---------------------------------------------
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a session' })
   @ApiOkResponse({

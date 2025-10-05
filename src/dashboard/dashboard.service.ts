@@ -16,7 +16,7 @@ export class DashboardService {
     @InjectModel(Teacher.name) private teacherModel: Model<Teacher>,
     @InjectModel(Package.name) private packageModel: Model<Package>,
   ) {}
-
+  //---------------------------------------------
   async getDashboard(
     filters?: Partial<TransactionFilterDto>,
   ): Promise<DashboardResponseDto> {
@@ -80,7 +80,7 @@ export class DashboardService {
       periodEnd,
     };
   }
-
+  //---------------------------------------------
   private async getActiveSessionPackages(
     startDate: Date,
     endDate: Date,
@@ -92,7 +92,7 @@ export class DashboardService {
     });
     return uniquePackages.length;
   }
-
+  //---------------------------------------------
   private async getActiveSubscriptionPackages(
     startDate: Date,
     endDate: Date,
@@ -109,7 +109,7 @@ export class DashboardService {
     );
     return subscriptionTransactions;
   }
-
+  //---------------------------------------------
   private async getTransactionSummary(
     startDate: Date,
     endDate: Date,
@@ -171,7 +171,7 @@ export class DashboardService {
       incomeByCategory,
     };
   }
-
+  //---------------------------------------------
   private async calculateTeacherSalaries(
     startDate: Date,
     endDate: Date,
@@ -201,7 +201,7 @@ export class DashboardService {
 
     return totalSalaries;
   }
-
+  //---------------------------------------------
   async getTeacherSalaryBreakdown(
     startDate: Date,
     endDate: Date,
@@ -237,7 +237,11 @@ export class DashboardService {
         typeof session.teacherId === 'object' &&
         'hourlyRate' in session.teacherId
       ) {
-        const teacher = session.teacherId as any;
+        const teacher = session.teacherId as unknown as {
+          _id: { toString(): string };
+          name: string;
+          hourlyRate: number;
+        };
         const teacherId = teacher._id.toString();
 
         if (!teacherBreakdown[teacherId]) {

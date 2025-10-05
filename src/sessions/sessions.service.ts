@@ -10,7 +10,7 @@ export class SessionsService {
   constructor(
     @InjectModel(Session.name) private sessionModel: Model<Session>,
   ) {}
-
+  //---------------------------------------------
   async create(
     createSessionDto: CreateSessionDto,
   ): Promise<SessionResponseDto> {
@@ -22,7 +22,7 @@ export class SessionsService {
       packageId: savedSession.packageId.toString(),
     } as SessionResponseDto;
   }
-
+  //---------------------------------------------
   async findAll(): Promise<SessionResponseDto[]> {
     const sessions = await this.sessionModel.find().exec();
     return sessions.map((session) => ({
@@ -31,7 +31,7 @@ export class SessionsService {
       packageId: session.packageId.toString(),
     })) as SessionResponseDto[];
   }
-
+  //---------------------------------------------
   async findByTeacher(teacherId: string): Promise<SessionResponseDto[]> {
     const sessions = await this.sessionModel.find({ teacherId }).exec();
     return sessions.map((session) => ({
@@ -40,7 +40,7 @@ export class SessionsService {
       packageId: session.packageId.toString(),
     })) as SessionResponseDto[];
   }
-
+  //---------------------------------------------
   async findByPackage(packageId: string): Promise<SessionResponseDto[]> {
     const sessions = await this.sessionModel.find({ packageId }).exec();
     return sessions.map((session) => ({
@@ -49,7 +49,7 @@ export class SessionsService {
       packageId: session.packageId.toString(),
     })) as SessionResponseDto[];
   }
-
+  //---------------------------------------------
   async findByDateRange(
     startDate: Date,
     endDate: Date,
@@ -69,7 +69,7 @@ export class SessionsService {
       packageId: session.packageId.toString(),
     })) as SessionResponseDto[];
   }
-
+  //---------------------------------------------
   async findConfirmed(): Promise<SessionResponseDto[]> {
     const sessions = await this.sessionModel.find({ isConfirmed: true }).exec();
     return sessions.map((session) => ({
@@ -78,7 +78,7 @@ export class SessionsService {
       packageId: session.packageId.toString(),
     })) as SessionResponseDto[];
   }
-
+  //---------------------------------------------
   async findOne(id: string): Promise<SessionResponseDto | null> {
     const session = await this.sessionModel.findById(id).exec();
     if (!session) return null;
@@ -88,7 +88,7 @@ export class SessionsService {
       packageId: session.packageId.toString(),
     } as SessionResponseDto;
   }
-
+  //---------------------------------------------
   async update(
     id: string,
     updateSessionDto: Partial<CreateSessionDto>,
@@ -103,14 +103,14 @@ export class SessionsService {
       packageId: session.packageId.toString(),
     } as SessionResponseDto;
   }
-
+  //---------------------------------------------
   async remove(id: string): Promise<void> {
     const result = await this.sessionModel.deleteOne({ _id: id }).exec();
     if (result.deletedCount === 0) {
       throw new NotFoundException('Session not found');
     }
   }
-
+  //---------------------------------------------
   async confirm(id: string): Promise<SessionResponseDto | null> {
     const session = await this.sessionModel
       .findByIdAndUpdate(id, { isConfirmed: true }, { new: true })
@@ -122,7 +122,7 @@ export class SessionsService {
       packageId: session.packageId.toString(),
     } as SessionResponseDto;
   }
-
+  //---------------------------------------------
   async unconfirm(id: string): Promise<SessionResponseDto | null> {
     const session = await this.sessionModel
       .findByIdAndUpdate(id, { isConfirmed: false }, { new: true })

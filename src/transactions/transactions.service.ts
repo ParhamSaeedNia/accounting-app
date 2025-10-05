@@ -14,7 +14,7 @@ export class TransactionsService {
   constructor(
     @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
   ) {}
-
+  //---------------------------------------------
   async create(
     createTransactionDto: CreateTransactionDto,
   ): Promise<TransactionResponseDto> {
@@ -33,13 +33,13 @@ export class TransactionsService {
     const newTransaction = new this.transactionModel(transactionData);
     return (await newTransaction.save()) as TransactionResponseDto;
   }
-
+  //---------------------------------------------
   async findAll(): Promise<TransactionResponseDto[]> {
     return (await this.transactionModel
       .find()
       .exec()) as TransactionResponseDto[];
   }
-
+  //---------------------------------------------
   async findWithFilters(
     filters: TransactionFilterDto,
   ): Promise<TransactionResponseDto[]> {
@@ -124,13 +124,13 @@ export class TransactionsService {
       .limit(limit)
       .exec()) as TransactionResponseDto[];
   }
-
+  //---------------------------------------------
   async findOne(id: string): Promise<TransactionResponseDto | null> {
     return (await this.transactionModel
       .findById(id)
       .exec()) as TransactionResponseDto | null;
   }
-
+  //---------------------------------------------
   async update(
     id: string,
     updateTransactionDto: Partial<CreateTransactionDto>,
@@ -162,26 +162,26 @@ export class TransactionsService {
       .findByIdAndUpdate(id, updateTransactionDto, { new: true })
       .exec()) as TransactionResponseDto | null;
   }
-
+  //---------------------------------------------
   async remove(id: string): Promise<void> {
     const result = await this.transactionModel.deleteOne({ _id: id }).exec();
     if (result.deletedCount === 0) {
       throw new NotFoundException('Transaction not found');
     }
   }
-
+  //---------------------------------------------
   async exclude(id: string): Promise<TransactionResponseDto | null> {
     return (await this.transactionModel
       .findByIdAndUpdate(id, { status: 'excluded' }, { new: true })
       .exec()) as TransactionResponseDto | null;
   }
-
+  //---------------------------------------------
   async activate(id: string): Promise<TransactionResponseDto | null> {
     return (await this.transactionModel
       .findByIdAndUpdate(id, { status: 'active' }, { new: true })
       .exec()) as TransactionResponseDto | null;
   }
-
+  //---------------------------------------------
   async getSummary(filters?: Partial<TransactionFilterDto>): Promise<{
     totalIncome: number;
     totalExpenses: number;

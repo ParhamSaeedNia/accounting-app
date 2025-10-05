@@ -27,7 +27,7 @@ import {
 @Controller('transactions')
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
-
+  //---------------------------------------------
   @Post()
   @ApiOperation({ summary: 'Create a new transaction' })
   @ApiCreatedResponse({
@@ -40,7 +40,7 @@ export class TransactionsController {
   ): Promise<TransactionResponseDto> {
     return this.transactionsService.create(createTransactionDto);
   }
-
+  //---------------------------------------------
   @Get()
   @ApiOperation({ summary: 'Get all transactions with optional filters' })
   @ApiOkResponse({
@@ -100,7 +100,7 @@ export class TransactionsController {
   ): Promise<TransactionResponseDto[]> {
     return this.transactionsService.findWithFilters(filters);
   }
-
+  //---------------------------------------------
   @Get('summary')
   @ApiOperation({ summary: 'Get transaction summary with filters' })
   @ApiOkResponse({
@@ -129,7 +129,7 @@ export class TransactionsController {
   async getSummary(@Query() filters: TransactionFilterDto) {
     return this.transactionsService.getSummary(filters);
   }
-
+  //---------------------------------------------
   @Get(':id')
   @ApiOperation({ summary: 'Get a transaction by ID' })
   @ApiOkResponse({
@@ -140,7 +140,7 @@ export class TransactionsController {
   findOne(@Param('id') id: string): Promise<TransactionResponseDto | null> {
     return this.transactionsService.findOne(id);
   }
-
+  //---------------------------------------------
   @Put(':id')
   @ApiOperation({ summary: 'Update a transaction' })
   @ApiOkResponse({
@@ -155,7 +155,7 @@ export class TransactionsController {
   ): Promise<TransactionResponseDto | null> {
     return this.transactionsService.update(id, updateTransactionDto);
   }
-
+  //---------------------------------------------
   @Patch(':id/exclude')
   @ApiOperation({ summary: 'Exclude a transaction from calculations' })
   @ApiOkResponse({
@@ -166,7 +166,7 @@ export class TransactionsController {
   exclude(@Param('id') id: string): Promise<TransactionResponseDto | null> {
     return this.transactionsService.exclude(id);
   }
-
+  //---------------------------------------------
   @Patch(':id/activate')
   @ApiOperation({ summary: 'Activate a transaction' })
   @ApiOkResponse({
@@ -177,7 +177,7 @@ export class TransactionsController {
   activate(@Param('id') id: string): Promise<TransactionResponseDto | null> {
     return this.transactionsService.activate(id);
   }
-
+  //---------------------------------------------
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a transaction' })
   @ApiOkResponse({

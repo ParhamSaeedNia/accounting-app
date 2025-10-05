@@ -13,7 +13,7 @@ import {
 @Controller('dashboard')
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
-
+  //---------------------------------------------
   @Get()
   @ApiOperation({ summary: 'Get dashboard summary' })
   @ApiOkResponse({
@@ -45,7 +45,7 @@ export class DashboardController {
   ): Promise<DashboardResponseDto> {
     return this.dashboardService.getDashboard(filters);
   }
-
+  //---------------------------------------------
   @Get('teacher-salaries')
   @ApiOperation({ summary: 'Get teacher salary breakdown' })
   @ApiOkResponse({
