@@ -1,0 +1,85 @@
+﻿Nwmoon Finance System
+The Problem
+Running Nwmoon is exciting, but the finance side is messy. Imagine this:
+* Students pay for packages — some take one course, some take multiple.
+
+* Teachers run sessions and earn money, but their pay can change every month.
+
+* We pay for tools, subscriptions, and operational costs.
+
+Right now, we track all of this manually — in spreadsheets, chats, or scattered notes. It’s easy to make mistakes, miss payments, or get confused about who gets paid what. At the end of the month, we spend hours just trying to figure out totals and profit.
+We need a system that makes this simple, automated, and easy to understand at a glance.
+________________
+
+
+What We Need
+We want a finance tool where everything is in one place:
+   1. One table for all transactions
+
+      * Every income or expense goes in here: student payments, teacher salaries, subscriptions, tools.
+
+      * Each row has a name, amount, type (income/expense), tags, and optional notes.
+
+      * Rows cannot be edited or deleted, only marked as excluded/disabled if needed.
+
+      * Some numbers can be added manually (like developer salaries or special subscriptions).
+
+         2. Automatic teacher salary calculation
+
+            * The system calculates how much each teacher should get based on the number of sessions they ran.
+
+            * After the first month, we can see immediately what each teacher earns.
+
+            * Flexible enough to allow adjustments if a teacher’s pay changes in a month.
+
+               3. Tax calculations
+
+                  * The system calculates tax for each transaction automatically.
+
+                  * Shows gross and net amounts clearly so we always know what we owe.
+
+                     4. Tags and filters
+
+                        * Tag transactions by category (e.g., “coding tools,” “teacher salary,” “marketing”).
+
+                        * Filter and sort by tag, type, month, or profit/loss to answer questions like: “How much did we spend on coding tools this month?”
+
+                           5. Summary dashboard
+
+                              * At the top, show the big numbers:
+
+                                 * Users with active session packages
+
+                                 * Users with active subscription packages
+
+                                 * Total income (net)
+
+                                 * Total expenses
+
+                                 * Gross profit (income – expenses)
+
+                                 * Total teacher salaries (calculated automatically)
+
+                                    6. Scalable & flexible
+
+                                       * Add new tags or categories easily.
+
+                                       * Handle changing pay for teachers and variable tool costs.
+
+                                       * Scale as the number of students, teachers, and packages grows.
+
+
+________________
+
+
+Imagine This in Action
+You open the dashboard on the first of the month. At a glance:
+                                          * You see how many active students we have for each package.
+
+                                          * You know exactly how much each teacher should be paid based on last month’s sessions.
+
+                                          * You see total income, expenses, and profit — no manual calculations.
+
+                                          * You can quickly check: how much did we spend on tools, subscriptions, or other categories?
+
+Everything is centralized, automatic, and easy to read — saving hours of work and reducing errors.

@@ -20,8 +20,8 @@ export class PackageResponseDto {
   price: number;
 
   @ApiProperty({
-    example: { infrastructure: 10, teacher: 50, marketing: 20 },
-    description: 'Expense percentages by category',
+    example: { infrastructure: 100, teacher: 500, marketing: 200 },
+    description: 'Expense amounts by category (dollar amounts)',
     type: 'object',
     additionalProperties: { type: 'number' },
   })

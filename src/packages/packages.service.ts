@@ -50,17 +50,17 @@ export class PackagesService {
     if (!pkg) throw new NotFoundException('Package not found');
     const price = pkg.price;
     const expenses = pkg.expenses;
-    const calculatedExpenses = {};
     let totalExpenses = 0;
-    for (const [key, percent] of Object.entries(expenses)) {
-      const amount = (percent / 100) * price;
-      calculatedExpenses[key] = amount;
+
+    // Calculate total expenses (expenses are now stored as dollar amounts)
+    for (const [, amount] of Object.entries(expenses)) {
       totalExpenses += amount;
     }
+
     return {
       packageName: pkg.packageName,
       price,
-      expenses: calculatedExpenses,
+      expenses,
       totalExpenses,
       profit: price - totalExpenses,
     };

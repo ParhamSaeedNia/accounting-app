@@ -13,7 +13,7 @@ export class Package extends Document {
   price: number;
 
   @ApiProperty({
-    example: { infrastructure: 10, teacher: 50 },
+    example: { infrastructure: 100, teacher: 500 },
     type: 'object',
     additionalProperties: { type: 'number' },
   })

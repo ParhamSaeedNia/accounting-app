@@ -1,0 +1,60 @@
+﻿1. Filters
+a) By Type
+* Income
+
+* Expense
+
+* Both (default)
+
+b) By Tag/Category
+   * Tags can be custom (e.g., “teacher salary,” “coding tools,” “marketing,” “developer salary”)
+
+   * Multiple tags can be selected at once (e.g., see all “teacher salary” + “tools” transactions)
+
+c) By Time
+      * Month (e.g., October 2025)
+
+      * Year (e.g., 2025)
+
+      * Custom date range (start date → end date)
+
+d) By Profit/Loss
+         * Profit transactions only
+
+         * Loss transactions only
+
+         * Both (default)
+
+e) By Row Status
+            * Active rows only
+
+            * Excluded/disabled rows
+
+            * Both
+
+f) By Name / Keyword Search
+               * Search transactions by name, note, or description
+
+               * Partial matches allowed
+
+________________
+
+
+2. Sorting
+                  * By Date: ascending or descending
+
+                  * By Amount: ascending or descending
+
+                  * By Name: alphabetical A→Z or Z→A
+
+                  * By Tag: alphabetical or grouped
+
+________________
+
+
+3. Combined Filters & Sorting
+                     * All filters can be combined (e.g., see all expenses tagged “coding tools” for October 2025, sorted by amount descending).
+
+                     * Dashboard calculations (income, expenses, gross, teacher salary totals) update dynamically based on applied filters.
+
+                     * Excluded/disabled rows are not counted in calculations but remain visible in the table for reference.

@@ -17,8 +17,8 @@ export class CreatePackageDto {
   price: number;
 
   @ApiProperty({
-    example: { infrastructure: 10, teacher: 50, marketing: 20 },
-    description: 'Expenses as key-value pairs (percentage values)',
+    example: { infrastructure: 100, teacher: 500, marketing: 200 },
+    description: 'Expenses as key-value pairs (dollar amounts)',
     type: 'object',
     additionalProperties: { type: 'number' },
   })

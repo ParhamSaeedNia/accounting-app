@@ -1,27 +1,46 @@
-# Accounting Packages API
+# Nwmoon Finance System
 
-A NestJS-based REST API for managing accounting packages with profit calculation capabilities. This application provides a complete solution for tracking packages, their expenses, and calculating profit margins.
+A comprehensive NestJS-based finance management system for educational institutions. This application provides automated teacher salary calculation, tax management, transaction tracking, filtering capabilities, and dashboard analytics.
 
 ## 🚀 Features
 
-- **Package Management**: Create, read, update, and delete accounting packages
-- **Profit Calculation**: Calculate profit margins based on package prices and expense percentages
-- **RESTful API**: Full CRUD operations with proper HTTP status codes
+### Core Systems
+
+- **Teacher Management**: Complete teacher profiles with hourly rates and salary automation
+- **Session Tracking**: Class sessions with automatic teacher salary calculations
+- **Transaction Management**: Income and expense tracking with tax calculations
+- **Package Management**: Dynamic expense categories with profit calculations
+- **Dashboard Analytics**: Real-time financial summaries and insights
+
+### Advanced Features
+
+- **Automated Salary Calculation**: Automatic teacher payments based on session hours
+- **Tax Management**: Built-in tax calculations for all transactions
+- **Dynamic Filtering**: Advanced filtering by type, tags, date ranges, and profit/loss
+- **Flexible Expenses**: Support for any expense categories (infrastructure, teacher, marketing, etc.)
+- **Real-time Dashboard**: Financial summaries with profit/loss analysis
+- **RESTful API**: Complete CRUD operations with proper HTTP status codes
 - **API Documentation**: Auto-generated Swagger/OpenAPI documentation
 - **Database Integration**: MongoDB with Mongoose ODM
 - **Docker Support**: Multi-environment Docker configuration
 - **TypeScript**: Full TypeScript support with strict type checking
-- **Validation**: Request validation using class-validator
-- **Testing**: Jest testing framework with e2e tests
 
 ## 🏗️ Architecture
 
-### Core Components
+### Core Modules
 
-- **Controller**: `PackagesController` - Handles HTTP requests and responses
-- **Service**: `PackagesService` - Business logic and data operations
-- **Entity**: `Package` - MongoDB schema definition
-- **DTO**: `CreatePackageDto` - Data transfer object for validation
+- **Teachers Module**: Teacher management with hourly rates and salary automation
+- **Sessions Module**: Class session tracking with automatic salary calculations
+- **Transactions Module**: Financial transaction management with tax calculations
+- **Packages Module**: Dynamic package management with flexible expense categories
+- **Dashboard Module**: Real-time analytics and financial summaries
+
+### Key Components
+
+- **Controllers**: Handle HTTP requests and responses for all modules
+- **Services**: Business logic and data operations
+- **Entities**: MongoDB schema definitions
+- **DTOs**: Data transfer objects for validation and API contracts
 
 ### Technology Stack
 
@@ -35,6 +54,45 @@ A NestJS-based REST API for managing accounting packages with profit calculation
 
 ## 📋 API Endpoints
 
+### Teachers
+
+| Method   | Endpoint        | Description          |
+| -------- | --------------- | -------------------- |
+| `POST`   | `/teachers`     | Create a new teacher |
+| `GET`    | `/teachers`     | Get all teachers     |
+| `GET`    | `/teachers/:id` | Get teacher by ID    |
+| `PUT`    | `/teachers/:id` | Update teacher       |
+| `DELETE` | `/teachers/:id` | Delete teacher       |
+
+### Sessions
+
+| Method | Endpoint                  | Description                |
+| ------ | ------------------------- | -------------------------- |
+| `POST` | `/sessions`               | Create a new session       |
+| `GET`  | `/sessions`               | Get all sessions           |
+| `GET`  | `/sessions/teacher/:id`   | Get sessions by teacher    |
+| `GET`  | `/sessions/package/:id`   | Get sessions by package    |
+| `GET`  | `/sessions/date-range`    | Get sessions by date range |
+| `GET`  | `/sessions/confirmed`     | Get confirmed sessions     |
+| `GET`  | `/sessions/:id`           | Get session by ID          |
+| `PUT`  | `/sessions/:id`           | Update session             |
+| `POST` | `/sessions/:id/confirm`   | Confirm session            |
+| `POST` | `/sessions/:id/unconfirm` | Unconfirm session          |
+
+### Transactions
+
+| Method   | Endpoint                | Description              |
+| -------- | ----------------------- | ------------------------ |
+| `POST`   | `/transactions`         | Create a new transaction |
+| `GET`    | `/transactions`         | Get all transactions     |
+| `GET`    | `/transactions/filter`  | Filter transactions      |
+| `GET`    | `/transactions/summary` | Get transaction summary  |
+| `GET`    | `/transactions/:id`     | Get transaction by ID    |
+| `PUT`    | `/transactions/:id`     | Update transaction       |
+| `DELETE` | `/transactions/:id`     | Delete transaction       |
+
+### Packages
+
 | Method   | Endpoint                  | Description                  |
 | -------- | ------------------------- | ---------------------------- |
 | `POST`   | `/packages`               | Create a new package         |
@@ -44,11 +102,56 @@ A NestJS-based REST API for managing accounting packages with profit calculation
 | `DELETE` | `/packages/:id`           | Delete package               |
 | `GET`    | `/packages/:id/calculate` | Calculate profit for package |
 
+### Dashboard
+
+| Method | Endpoint     | Description           |
+| ------ | ------------ | --------------------- |
+| `GET`  | `/dashboard` | Get dashboard summary |
+
 ### API Documentation
 
 Interactive API documentation is available at: `http://localhost:3000/api`
 
-## 🗄️ Data Model
+## 🗄️ Data Models
+
+### Teacher Entity
+
+```typescript
+{
+  name: string; // Teacher's full name
+  email: string; // Teacher's email address
+  hourlyRate: number; // Hourly rate for salary calculation
+}
+```
+
+### Session Entity
+
+```typescript
+{
+  teacherId: ObjectId; // Reference to teacher
+  packageId: ObjectId; // Reference to package
+  sessionDate: Date; // When the session occurred
+  duration: number; // Session duration in hours
+  title: string; // Session title
+  isConfirmed: boolean; // Whether session is confirmed
+}
+```
+
+### Transaction Entity
+
+```typescript
+{
+  name: string;           // Transaction description
+  amount: number;          // Transaction amount
+  type: 'income' | 'expense'; // Transaction type
+  tags: string[];         // Categorization tags
+  transactionDate: Date;   // When transaction occurred
+  taxRate: number;         // Tax rate (0-1)
+  taxAmount: number;       // Calculated tax amount
+  netAmount: number;      // Amount after tax
+  status: 'active' | 'excluded'; // Transaction status
+}
+```
 
 ### Package Entity
 
@@ -56,20 +159,25 @@ Interactive API documentation is available at: `http://localhost:3000/api`
 {
   packageName: string; // Name of the package
   price: number; // Package price
-  expenses: Record<string, number>; // Expense percentages by category
+  expenses: Record<string, number>; // Dynamic expense categories (dollar amounts)
 }
 ```
 
-### Example Package
+### Example Package with Dynamic Expenses
 
 ```json
 {
-  "packageName": "Premium Package",
-  "price": 1000,
+  "packageName": "Data Science Course",
+  "price": 2000,
   "expenses": {
-    "infrastructure": 10,
-    "teacher": 50,
-    "marketing": 20
+    "infrastructure": 150,
+    "teacher": 1000,
+    "marketing": 200,
+    "cloud_compute": 100,
+    "datasets": 80,
+    "software_licenses": 120,
+    "certification": 50,
+    "support": 60
   }
 }
 ```
@@ -80,7 +188,7 @@ The system calculates profit using the formula:
 
 ```
 Profit = Price - Total Expenses
-Total Expenses = Σ(Price × Expense Percentage / 100)
+Total Expenses = Σ(Expense Amounts)
 ```
 
 ## 🛠️ Development Setup
@@ -242,27 +350,70 @@ npm run test:watch
 ```
 accounting-app/
 ├── src/
-│   ├── packages/
+│   ├── teachers/           # Teacher management module
 │   │   ├── dto/
-│   │   │   └── request/
-│   │   │       └── create-package.dto.ts
+│   │   │   ├── request/
+│   │   │   │   └── create-teacher.dto.ts
+│   │   │   └── response/
+│   │   │       └── teacher-response.dto.ts
+│   │   ├── teachers.controller.ts
+│   │   ├── teachers.entity.ts
+│   │   ├── teachers.module.ts
+│   │   └── teachers.service.ts
+│   ├── sessions/           # Session management module
+│   │   ├── dto/
+│   │   │   ├── request/
+│   │   │   │   └── create-session.dto.ts
+│   │   │   └── response/
+│   │   │       └── session-response.dto.ts
+│   │   ├── sessions.controller.ts
+│   │   ├── sessions.entity.ts
+│   │   ├── sessions.module.ts
+│   │   └── sessions.service.ts
+│   ├── transactions/        # Transaction management module
+│   │   ├── dto/
+│   │   │   ├── request/
+│   │   │   │   ├── create-transaction.dto.ts
+│   │   │   │   └── transaction-filter.dto.ts
+│   │   │   └── response/
+│   │   │       └── transaction-response.dto.ts
+│   │   ├── transactions.controller.ts
+│   │   ├── transactions.entity.ts
+│   │   ├── transactions.module.ts
+│   │   └── transactions.service.ts
+│   ├── packages/            # Package management module
+│   │   ├── dto/
+│   │   │   ├── request/
+│   │   │   │   └── create-package.dto.ts
+│   │   │   └── response/
+│   │   │       ├── package-response.dto.ts
+│   │   │       └── calculate-profit-response.dto.ts
 │   │   ├── packages.controller.ts
 │   │   ├── packages.entity.ts
 │   │   ├── packages.module.ts
 │   │   └── packages.service.ts
-│   ├── app.module.ts
-│   └── main.ts
-├── test/
+│   ├── dashboard/           # Dashboard analytics module
+│   │   ├── dto/
+│   │   │   └── response/
+│   │   │       └── dashboard-response.dto.ts
+│   │   ├── dashboard.controller.ts
+│   │   ├── dashboard.module.ts
+│   │   └── dashboard.service.ts
+│   ├── app.module.ts        # Main application module
+│   └── main.ts             # Application entry point
+├── test/                   # E2E tests
 │   ├── app.e2e-spec.ts
 │   └── jest-e2e.json
-├── dist/                    # Compiled output
-├── docker-compose.yml       # Base Docker configuration
-├── docker-compose.dev.yml   # Development overrides
-├── docker-compose.prod.yml  # Production overrides
-├── Dockerfile              # Multi-stage Docker build
-├── Makefile                # Development commands
-├── package.json            # Dependencies and scripts
-└── tsconfig.json           # TypeScript configuration
+├── seed-data.mjs          # Database seeding script
+├── package-examples.mjs   # Package examples script
+├── dist/                  # Compiled output
+├── docker-compose.yml     # Base Docker configuration
+├── docker-compose.dev.yml # Development overrides
+├── docker-compose.prod.yml # Production overrides
+├── Dockerfile            # Multi-stage Docker build
+├── Makefile              # Development commands
+├── package.json          # Dependencies and scripts
+└── tsconfig.json         # TypeScript configuration
 ```
 
 ## 🚀 Deployment
@@ -293,41 +444,94 @@ accounting-app/
 
 ## 🔍 API Usage Examples
 
-### Create a Package
+### Create a Teacher
+
+```bash
+curl -X POST http://localhost:3000/teachers \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Smith",
+    "email": "john.smith@example.com",
+    "hourlyRate": 50
+  }'
+```
+
+### Create a Session
+
+```bash
+curl -X POST http://localhost:3000/sessions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "teacherId": "teacher_id_here",
+    "packageId": "package_id_here",
+    "sessionDate": "2024-01-15T10:00:00.000Z",
+    "duration": 2,
+    "title": "React Fundamentals",
+    "isConfirmed": true
+  }'
+```
+
+### Create a Transaction
+
+```bash
+curl -X POST http://localhost:3000/transactions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Student Payment - Alice Brown",
+    "amount": 1200,
+    "type": "income",
+    "tags": ["student-payment", "premium-package"],
+    "transactionDate": "2024-01-15T10:00:00.000Z",
+    "taxRate": 0.1
+  }'
+```
+
+### Create a Package with Dynamic Expenses
 
 ```bash
 curl -X POST http://localhost:3000/packages \
   -H "Content-Type: application/json" \
   -d '{
-    "packageName": "Premium Course",
-    "price": 1000,
+    "packageName": "AI/ML Bootcamp",
+    "price": 2000,
     "expenses": {
-      "infrastructure": 10,
-      "teacher": 50,
-      "marketing": 20
+      "infrastructure": 150,
+      "teacher": 1000,
+      "marketing": 200,
+      "gpu_rental": 100,
+      "datasets": 80,
+      "cloud_compute": 120,
+      "certification": 50,
+      "support": 70
     }
   }'
 ```
 
-### Calculate Profit
+### Filter Transactions
 
 ```bash
-curl http://localhost:3000/packages/{id}/calculate
+curl -X GET "http://localhost:3000/transactions/filter?type=income&tags=student-payment&startDate=2024-01-01&endDate=2024-01-31"
 ```
 
-### Response Example
+### Get Dashboard Summary
+
+```bash
+curl http://localhost:3000/dashboard
+```
+
+### Dashboard Response Example
 
 ```json
 {
-  "packageName": "Premium Course",
-  "price": 1000,
-  "expenses": {
-    "infrastructure": 100,
-    "teacher": 500,
-    "marketing": 200
-  },
-  "totalExpenses": 800,
-  "profit": 200
+  "totalIncome": 5000,
+  "totalExpenses": 3000,
+  "netProfit": 2000,
+  "totalTaxes": 500,
+  "teacherSalaries": 1200,
+  "transactionCount": 15,
+  "incomeTransactions": 5,
+  "expenseTransactions": 10,
+  "profitMargin": 0.4
 }
 ```
 
@@ -350,6 +554,43 @@ For support and questions:
 - Check the API documentation at `/api`
 - Review the test files for usage examples
 - Check the Docker logs for debugging
+
+---
+
+## 🌱 Database Seeding
+
+### Populate Sample Data
+
+The system includes a comprehensive seeding script to populate the database with sample data:
+
+```bash
+# Start the application first
+npm run start:dev
+
+# In another terminal, run the seeding script
+node seed-data.mjs
+```
+
+This will create:
+
+- **4 Teachers** with different hourly rates
+- **4 Packages** with dynamic expense categories
+- **8 Sessions** with automatic teacher assignments
+- **12 Transactions** including income and expenses
+
+### MongoDB Connection
+
+Connect to MongoDB using:
+
+```
+mongodb://localhost:27017/accounting
+```
+
+### View Data in MongoDB Compass
+
+1. Open MongoDB Compass
+2. Connect to: `mongodb://localhost:27017/accounting`
+3. Explore the collections: `teachers`, `sessions`, `transactions`, `packages`
 
 ---
 

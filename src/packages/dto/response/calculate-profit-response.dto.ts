@@ -19,7 +19,7 @@ export class CalculateProfitResponseDto {
       teacher: 500,
       marketing: 200,
     },
-    description: 'Calculated expense amounts (not percentages)',
+    description: 'Expense amounts by category (dollar amounts)',
     type: 'object',
     additionalProperties: { type: 'number' },
   })
