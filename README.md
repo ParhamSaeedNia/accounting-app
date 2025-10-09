@@ -548,7 +548,7 @@ For support and questions:
 - Check the API documentation at `/api`
 - Review the API usage examples in this README
 - Check the Docker logs for debugging
-- Refer to the Product Manager Report for feature overview
+- Refer to the Report.md for feature overview
 
 ---
 
