@@ -4,50 +4,65 @@ import { Model } from 'mongoose';
 import { CreateSessionDto } from './dto/request/create-session.dto';
 import { Session } from './sessions.entity';
 import { SessionResponseDto } from './dto/response/session-response.dto';
+import { TeachersService } from '../teachers/teachers.service';
+import { PackagesService } from '../packages/packages.service';
 
 @Injectable()
 export class SessionsService {
   constructor(
     @InjectModel(Session.name) private sessionModel: Model<Session>,
+    private teachersService: TeachersService,
+    private packagesService: PackagesService,
   ) {}
+
+  // Helper method to enrich session with teacher and package data
+  private async enrichSessionWithRelatedData(
+    session: Session,
+  ): Promise<SessionResponseDto> {
+    const teacher = await this.teachersService.findOne(
+      session.teacherId.toString(),
+    );
+    const packageData = await this.packagesService.findOne(
+      session.packageId.toString(),
+    );
+
+    return {
+      ...session.toObject(),
+      teacherId: session.teacherId.toString(),
+      packageId: session.packageId.toString(),
+      teacher,
+      package: packageData,
+    } as SessionResponseDto;
+  }
+
   //---------------------------------------------
   async create(
     createSessionDto: CreateSessionDto,
   ): Promise<SessionResponseDto> {
     const newSession = new this.sessionModel(createSessionDto);
     const savedSession = await newSession.save();
-    return {
-      ...savedSession.toObject(),
-      teacherId: savedSession.teacherId.toString(),
-      packageId: savedSession.packageId.toString(),
-    } as SessionResponseDto;
+    return this.enrichSessionWithRelatedData(savedSession);
   }
   //---------------------------------------------
   async findAll(): Promise<SessionResponseDto[]> {
     const sessions = await this.sessionModel.find().exec();
-    return sessions.map((session) => ({
-      ...session.toObject(),
-      teacherId: session.teacherId.toString(),
-      packageId: session.packageId.toString(),
-    })) as SessionResponseDto[];
+    return Promise.all(
+      sessions.map((session) => this.enrichSessionWithRelatedData(session)),
+    );
   }
   //---------------------------------------------
   async findByTeacher(teacherId: string): Promise<SessionResponseDto[]> {
     const sessions = await this.sessionModel.find({ teacherId }).exec();
-    return sessions.map((session) => ({
-      ...session.toObject(),
-      teacherId: session.teacherId.toString(),
-      packageId: session.packageId.toString(),
-    })) as SessionResponseDto[];
+    return Promise.all(
+      sessions.map((session) => this.enrichSessionWithRelatedData(session)),
+    );
   }
   //---------------------------------------------
   async findByPackage(packageId: string): Promise<SessionResponseDto[]> {
     const sessions = await this.sessionModel.find({ packageId }).exec();
-    return sessions.map((session) => ({
-      ...session.toObject(),
-      teacherId: session.teacherId.toString(),
-      packageId: session.packageId.toString(),
-    })) as SessionResponseDto[];
+    return Promise.all(
+      sessions.map((session) => this.enrichSessionWithRelatedData(session)),
+    );
   }
   //---------------------------------------------
   async findByDateRange(
@@ -63,30 +78,22 @@ export class SessionsService {
       })
       .exec();
 
-    return sessions.map((session) => ({
-      ...session.toObject(),
-      teacherId: session.teacherId.toString(),
-      packageId: session.packageId.toString(),
-    })) as SessionResponseDto[];
+    return Promise.all(
+      sessions.map((session) => this.enrichSessionWithRelatedData(session)),
+    );
   }
   //---------------------------------------------
   async findConfirmed(): Promise<SessionResponseDto[]> {
     const sessions = await this.sessionModel.find({ isConfirmed: true }).exec();
-    return sessions.map((session) => ({
-      ...session.toObject(),
-      teacherId: session.teacherId.toString(),
-      packageId: session.packageId.toString(),
-    })) as SessionResponseDto[];
+    return Promise.all(
+      sessions.map((session) => this.enrichSessionWithRelatedData(session)),
+    );
   }
   //---------------------------------------------
   async findOne(id: string): Promise<SessionResponseDto | null> {
     const session = await this.sessionModel.findById(id).exec();
     if (!session) return null;
-    return {
-      ...session.toObject(),
-      teacherId: session.teacherId.toString(),
-      packageId: session.packageId.toString(),
-    } as SessionResponseDto;
+    return this.enrichSessionWithRelatedData(session);
   }
   //---------------------------------------------
   async update(
@@ -97,11 +104,7 @@ export class SessionsService {
       .findByIdAndUpdate(id, updateSessionDto, { new: true })
       .exec();
     if (!session) return null;
-    return {
-      ...session.toObject(),
-      teacherId: session.teacherId.toString(),
-      packageId: session.packageId.toString(),
-    } as SessionResponseDto;
+    return this.enrichSessionWithRelatedData(session);
   }
   //---------------------------------------------
   async remove(id: string): Promise<void> {
@@ -116,11 +119,7 @@ export class SessionsService {
       .findByIdAndUpdate(id, { isConfirmed: true }, { new: true })
       .exec();
     if (!session) return null;
-    return {
-      ...session.toObject(),
-      teacherId: session.teacherId.toString(),
-      packageId: session.packageId.toString(),
-    } as SessionResponseDto;
+    return this.enrichSessionWithRelatedData(session);
   }
   //---------------------------------------------
   async unconfirm(id: string): Promise<SessionResponseDto | null> {
@@ -128,10 +127,6 @@ export class SessionsService {
       .findByIdAndUpdate(id, { isConfirmed: false }, { new: true })
       .exec();
     if (!session) return null;
-    return {
-      ...session.toObject(),
-      teacherId: session.teacherId.toString(),
-      packageId: session.packageId.toString(),
-    } as SessionResponseDto;
+    return this.enrichSessionWithRelatedData(session);
   }
 }

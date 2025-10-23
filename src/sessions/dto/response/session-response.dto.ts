@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { TeacherResponseDto } from '../../../teachers/dto/response/teacher-response.dto';
+import { PackageResponseDto } from '../../../packages/dto/response/package-response.dto';
 
 export class SessionResponseDto {
   @ApiProperty({
@@ -18,6 +20,18 @@ export class SessionResponseDto {
     description: 'ID of the package this session belongs to',
   })
   packageId: string;
+
+  @ApiProperty({
+    description: 'Teacher information for this session',
+    type: TeacherResponseDto,
+  })
+  teacher: TeacherResponseDto;
+
+  @ApiProperty({
+    description: 'Package information for this session',
+    type: PackageResponseDto,
+  })
+  package: PackageResponseDto;
 
   @ApiProperty({
     example: '2024-01-15T10:30:00.000Z',
