@@ -65,7 +65,7 @@ A comprehensive NestJS-based finance management system for educational instituti
 - **Database**: MongoDB with Mongoose
 - **Language**: TypeScript 5.7
 - **Documentation**: Swagger/OpenAPI
-- **Testing**: Removed (as per project requirements)
+- **Testing**: Jest 30 with ts-jest + @nestjs/testing
 - **Containerization**: Docker & Docker Compose
 - **Code Quality**: ESLint, Prettier
 
@@ -303,7 +303,20 @@ make watch
 
 ## 🧪 Testing
 
-**Note**: Testing has been removed from this project as per requirements. The system is production-ready with comprehensive API documentation and manual testing capabilities.
+Comprehensive unit tests cover controllers and services using `@nestjs/testing`, `ts-jest`, and Jest 30's modern test runner.
+
+```bash
+# Run the entire suite
+npm test
+
+# Watch for changes
+npm run test:watch
+
+# Generate coverage
+npm run test:cov
+```
+
+The Jest configuration lives in `jest.config.js` and scopes tests to `src/**/*.spec.ts`. All suites currently pass (`104` tests across `10` suites). Continuous integration should run `npm test` to guard regressions.
 
 ## 📦 Package Scripts
 
