@@ -1,19 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { format } from 'date-fns';
-import { 
-  DollarSign, 
-  TrendingUp, 
-  TrendingDown, 
-  Users, 
+import {
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
+  Users,
   Package,
   Receipt,
-  Calculator
+  Calculator,
+  X,
 } from 'lucide-react';
 import { dashboardApi } from '../api';
 import type { DashboardData, TeacherSalary } from '../types';
 import StatCard from '../components/ui/StatCard';
 import Card, { CardHeader, CardContent } from '../components/ui/Card';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableEmpty } from '../components/ui/Table';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableEmpty,
+} from '../components/ui/Table';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { PageLoading } from '../components/ui/Loading';
@@ -34,32 +43,47 @@ export default function Dashboard() {
   const [endDate, setEndDate] = useState('');
   const { showToast } = useToast();
 
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const filters = {
-        startDate: startDate || undefined,
-        endDate: endDate || undefined,
-      };
-      const [dashboardData, salariesData] = await Promise.all([
-        dashboardApi.getDashboard(filters),
-        dashboardApi.getTeacherSalaries(filters),
-      ]);
-      setDashboard(dashboardData);
-      setSalaries(salariesData);
-    } catch (error) {
-      showToast('Failed to load dashboard data', 'error');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const hasFilters = startDate || endDate;
 
+  const loadData = useCallback(
+    async (filters?: { startDate?: string; endDate?: string }) => {
+      try {
+        setLoading(true);
+        const [dashboardData, salariesData] = await Promise.all([
+          dashboardApi.getDashboard(filters),
+          dashboardApi.getTeacherSalaries(filters),
+        ]);
+        setDashboard(dashboardData);
+        setSalaries(salariesData);
+      } catch (error) {
+        showToast('Failed to load dashboard data', 'error');
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [showToast],
+  );
+
+  // Load all data on initial mount (no filters)
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
-  if (loading) return <PageLoading />;
+  const applyFilters = () => {
+    loadData({
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
+    });
+  };
+
+  const clearFilters = () => {
+    setStartDate('');
+    setEndDate('');
+    loadData(); // Load without filters
+  };
+
+  if (loading && !dashboard) return <PageLoading />;
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -75,6 +99,7 @@ export default function Dashboard() {
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             className="w-40"
+            placeholder="Start date"
           />
           <span className="text-dark-500">to</span>
           <Input
@@ -82,8 +107,17 @@ export default function Dashboard() {
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
             className="w-40"
+            placeholder="End date"
           />
-          <Button onClick={loadData}>Apply</Button>
+          <Button onClick={applyFilters} disabled={loading}>
+            Apply
+          </Button>
+          {hasFilters && (
+            <Button variant="ghost" onClick={clearFilters} disabled={loading}>
+              <X className="w-4 h-4" />
+              Clear
+            </Button>
+          )}
         </div>
       </div>
 
@@ -183,11 +217,12 @@ export default function Dashboard() {
 
       {/* Teacher Salaries */}
       <Card>
-        <CardHeader 
-          title="Teacher Salary Breakdown" 
-          subtitle={dashboard?.periodStart && dashboard?.periodEnd 
-            ? `${format(new Date(dashboard.periodStart), 'MMM d, yyyy')} - ${format(new Date(dashboard.periodEnd), 'MMM d, yyyy')}`
-            : 'Current Period'
+        <CardHeader
+          title="Teacher Salary Breakdown"
+          subtitle={
+            hasFilters && dashboard?.periodStart && dashboard?.periodEnd
+              ? `${format(new Date(dashboard.periodStart), 'MMM d, yyyy')} - ${format(new Date(dashboard.periodEnd), 'MMM d, yyyy')}`
+              : 'All Time'
           }
         />
         <Table>

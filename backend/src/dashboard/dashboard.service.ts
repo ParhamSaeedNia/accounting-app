@@ -20,24 +20,19 @@ export class DashboardService {
   async getDashboard(
     filters?: Partial<TransactionFilterDto>,
   ): Promise<DashboardResponseDto> {
-    // Get date range for calculations
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      0,
-      23,
-      59,
-      59,
-      999,
-    );
+    // If no date filters provided, return all-time data
+    // Otherwise use the provided date range
+    const hasDateFilters = filters?.startDate || filters?.endDate;
 
-    // Override with filter dates if provided
-    const periodStart = filters?.startDate
-      ? new Date(filters.startDate)
-      : startOfMonth;
-    const periodEnd = filters?.endDate ? new Date(filters.endDate) : endOfMonth;
+    let periodStart: Date | undefined;
+    let periodEnd: Date | undefined;
+
+    if (hasDateFilters) {
+      periodStart = filters?.startDate
+        ? new Date(filters.startDate)
+        : undefined;
+      periodEnd = filters?.endDate ? new Date(filters.endDate) : undefined;
+    }
 
     // Get active packages count
     const activeSessionPackages = await this.getActiveSessionPackages(
@@ -76,43 +71,53 @@ export class DashboardService {
       totalTax: transactionSummary.totalTax,
       expensesByCategory: transactionSummary.expensesByCategory,
       incomeByCategory: transactionSummary.incomeByCategory,
-      periodStart,
-      periodEnd,
+      periodStart: periodStart || new Date(0),
+      periodEnd: periodEnd || new Date(),
     };
   }
   //---------------------------------------------
   private async getActiveSessionPackages(
-    startDate: Date,
-    endDate: Date,
+    startDate?: Date,
+    endDate?: Date,
   ): Promise<number> {
     // Count unique packages that have confirmed sessions in the period
-    const uniquePackages = await this.sessionModel.distinct('packageId', {
-      sessionDate: { $gte: startDate, $lte: endDate },
-      isConfirmed: true,
-    });
+    const query: Record<string, unknown> = { isConfirmed: true };
+    if (startDate || endDate) {
+      query.sessionDate = {};
+      if (startDate)
+        (query.sessionDate as Record<string, Date>).$gte = startDate;
+      if (endDate) (query.sessionDate as Record<string, Date>).$lte = endDate;
+    }
+    const uniquePackages = await this.sessionModel.distinct('packageId', query);
     return uniquePackages.length;
   }
   //---------------------------------------------
   private async getActiveSubscriptionPackages(
-    startDate: Date,
-    endDate: Date,
+    startDate?: Date,
+    endDate?: Date,
   ): Promise<number> {
     // This would typically involve checking subscription transactions
     // For now, we'll count income transactions tagged as 'subscription'
-    const subscriptionTransactions = await this.transactionModel.countDocuments(
-      {
-        type: 'income',
-        tags: { $in: ['subscription', 'subscription-package'] },
-        transactionDate: { $gte: startDate, $lte: endDate },
-        status: 'active',
-      },
-    );
+    const query: Record<string, unknown> = {
+      type: 'income',
+      tags: { $in: ['subscription', 'subscription-package'] },
+      status: 'active',
+    };
+    if (startDate || endDate) {
+      query.transactionDate = {};
+      if (startDate)
+        (query.transactionDate as Record<string, Date>).$gte = startDate;
+      if (endDate)
+        (query.transactionDate as Record<string, Date>).$lte = endDate;
+    }
+    const subscriptionTransactions =
+      await this.transactionModel.countDocuments(query);
     return subscriptionTransactions;
   }
   //---------------------------------------------
   private async getTransactionSummary(
-    startDate: Date,
-    endDate: Date,
+    startDate?: Date,
+    endDate?: Date,
     filters?: Partial<TransactionFilterDto>,
   ): Promise<{
     totalIncome: number;
@@ -122,10 +127,18 @@ export class DashboardService {
     expensesByCategory: Record<string, number>;
     incomeByCategory: Record<string, number>;
   }> {
-    const query: Record<string, any> = {
+    const query: Record<string, unknown> = {
       status: 'active',
-      transactionDate: { $gte: startDate, $lte: endDate },
     };
+
+    // Only add date filter if dates are provided
+    if (startDate || endDate) {
+      query.transactionDate = {};
+      if (startDate)
+        (query.transactionDate as Record<string, Date>).$gte = startDate;
+      if (endDate)
+        (query.transactionDate as Record<string, Date>).$lte = endDate;
+    }
 
     // Apply additional filters
     if (filters?.type) query.type = filters.type as 'income' | 'expense';
@@ -173,15 +186,19 @@ export class DashboardService {
   }
   //---------------------------------------------
   private async calculateTeacherSalaries(
-    startDate: Date,
-    endDate: Date,
+    startDate?: Date,
+    endDate?: Date,
   ): Promise<number> {
     // Get all confirmed sessions in the period
+    const query: Record<string, unknown> = { isConfirmed: true };
+    if (startDate || endDate) {
+      query.sessionDate = {};
+      if (startDate)
+        (query.sessionDate as Record<string, Date>).$gte = startDate;
+      if (endDate) (query.sessionDate as Record<string, Date>).$lte = endDate;
+    }
     const sessions = await this.sessionModel
-      .find({
-        sessionDate: { $gte: startDate, $lte: endDate },
-        isConfirmed: true,
-      })
+      .find(query)
       .populate('teacherId')
       .exec();
 
@@ -203,8 +220,8 @@ export class DashboardService {
   }
   //---------------------------------------------
   async getTeacherSalaryBreakdown(
-    startDate: Date,
-    endDate: Date,
+    startDate?: Date,
+    endDate?: Date,
   ): Promise<
     Array<{
       teacherId: string;
@@ -213,11 +230,15 @@ export class DashboardService {
       totalPay: number;
     }>
   > {
+    const query: Record<string, unknown> = { isConfirmed: true };
+    if (startDate || endDate) {
+      query.sessionDate = {};
+      if (startDate)
+        (query.sessionDate as Record<string, Date>).$gte = startDate;
+      if (endDate) (query.sessionDate as Record<string, Date>).$lte = endDate;
+    }
     const sessions = await this.sessionModel
-      .find({
-        sessionDate: { $gte: startDate, $lte: endDate },
-        isConfirmed: true,
-      })
+      .find(query)
       .populate('teacherId')
       .exec();
 

@@ -65,13 +65,9 @@ export class DashboardController {
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ) {
-    const now = new Date();
-    const periodStart = startDate
-      ? new Date(startDate)
-      : new Date(now.getFullYear(), now.getMonth(), 1);
-    const periodEnd = endDate
-      ? new Date(endDate)
-      : new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+    // If no dates provided, return all-time data
+    const periodStart = startDate ? new Date(startDate) : undefined;
+    const periodEnd = endDate ? new Date(endDate) : undefined;
 
     return this.dashboardService.getTeacherSalaryBreakdown(
       periodStart,
