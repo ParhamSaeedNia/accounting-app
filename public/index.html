@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nwmoon Finance System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-tertiary: #1a1a25;
+      --bg-card: #15151f;
+      --border: #2a2a3a;
+      --text-primary: #f0f0f5;
+      --text-secondary: #8888a0;
+      --text-muted: #5a5a70;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --income: #10b981;
+      --expense: #f43f5e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      padding: 24px 16px;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 32px;
+    }
+
+    .nav-section {
+      margin-bottom: 24px;
+    }
+
+    .nav-section-title {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+      padding-left: 12px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      opacity: 0.8;
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      margin-left: 260px;
+      padding: 32px;
+      background: var(--bg-primary);
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .stat-value.income { color: var(--income); }
+    .stat-value.expense { color: var(--expense); }
+    .stat-value.neutral { color: var(--accent); }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    td {
+      font-size: 0.9rem;
+    }
+
+    tr:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .tag-income {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--income);
+    }
+
+    .tag-expense {
+      background: rgba(244, 63, 94, 0.15);
+      color: var(--expense);
+    }
+
+    .tag-active {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--success);
+    }
+
+    .tag-inactive {
+      background: rgba(136, 136, 160, 0.15);
+      color: var(--text-secondary);
+    }
+
+    .tag-confirmed {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--accent);
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: var(--border);
+      color: var(--text-primary);
+    }
+
+    .action-btn.danger:hover {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: white;
+    }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(0.9);
+      transition: transform 0.3s;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .filter-bar input,
+    .filter-bar select {
+      padding: 10px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .filter-bar input:focus,
+    .filter-bar select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Loading */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 12px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 2000;
+    }
+
+    .toast {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.3s ease;
+    }
+
+    .toast.success { border-left: 4px solid var(--success); }
+    .toast.error { border-left: 4px solid var(--danger); }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Money formatting */
+    .money {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    /* Page sections */
+    .page-section {
+      display: none;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    /* Expenses editor */
+    .expenses-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .expense-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .expense-row input {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-family: inherit;
+    }
+
+    .expense-row .remove-expense {
+      padding: 8px 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--danger);
+      cursor: pointer;
+    }
+
+    .add-expense-btn {
+      margin-top: 8px;
+      padding: 8px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .add-expense-btn:hover {
+      background: var(--border);
+    }
+
+    /* Profit breakdown */
+    .profit-card {
+      background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-tertiary) 100%);
+    }
+
+    .profit-breakdown {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .profit-item {
+      padding: 16px;
+      background: var(--bg-primary);
+      border-radius: 8px;
+    }
+
+    .profit-item-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .profit-item-value {
+      font-size: 1.25rem;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        z-index: 100;
+      }
+      
+      .main {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">Nwmoon</div>
+      <div class="logo-sub">Finance System</div>
+
+      <nav>
+        <div class="nav-section">
+          <div class="nav-section-title">Overview</div>
+          <div class="nav-item active" data-page="dashboard">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+            </svg>
+            Dashboard
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Management</div>
+          <div class="nav-item" data-page="packages">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+            Packages
+          </div>
+          <div class="nav-item" data-page="teachers">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            Teachers
+          </div>
+          <div class="nav-item" data-page="sessions">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            Sessions
+          </div>
+          <div class="nav-item" data-page="transactions">
+            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            Transactions
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Dashboard Page -->
+      <section id="dashboard" class="page-section active">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Financial overview and key metrics</p>
+          </div>
+          <div class="filter-bar">
+            <input type="date" id="dashboard-start-date" placeholder="Start Date">
+            <input type="date" id="dashboard-end-date" placeholder="End Date">
+            <button class="btn btn-primary" onclick="loadDashboard()">Apply Filter</button>
+          </div>
+        </div>
+
+        <div id="dashboard-stats" class="stats-grid">
+          <!-- Stats will be loaded here -->
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Teacher Salary Breakdown</h3>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Teacher</th>
+                  <th>Total Hours</th>
+                  <th>Total Pay</th>
+                </tr>
+              </thead>
+              <tbody id="teacher-salaries-table">
+                <!-- Data will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Packages Page -->
+      <section id="packages" class="page-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Packages</h1>
+            <p class="page-subtitle">Manage your service packages</p>
+          </div>
+          <button class="btn btn-primary" onclick="openPackageModal()">
+            + Add Package
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Package Name</th>
+                  <th>Price</th>
+                  <th>Expenses</th>
+                  <th>Profit</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="packages-table">
+                <!-- Data will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Teachers Page -->
+      <section id="teachers" class="page-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Teachers</h1>
+            <p class="page-subtitle">Manage your teaching staff</p>
+          </div>
+          <button class="btn btn-primary" onclick="openTeacherModal()">
+            + Add Teacher
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Hourly Rate</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="teachers-table">
+                <!-- Data will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sessions Page -->
+      <section id="sessions" class="page-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Sessions</h1>
+            <p class="page-subtitle">Track teaching sessions</p>
+          </div>
+          <button class="btn btn-primary" onclick="openSessionModal()">
+            + Add Session
+          </button>
+        </div>
+
+        <div class="filter-bar">
+          <select id="session-filter-teacher" onchange="loadSessions()">
+            <option value="">All Teachers</option>
+          </select>
+          <select id="session-filter-status" onchange="loadSessions()">
+            <option value="">All Status</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="unconfirmed">Unconfirmed</option>
+          </select>
+          <input type="date" id="session-start-date" onchange="loadSessions()">
+          <input type="date" id="session-end-date" onchange="loadSessions()">
+        </div>
+
+        <div class="card">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Title</th>
+                  <th>Teacher</th>
+                  <th>Package</th>
+                  <th>Duration</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sessions-table">
+                <!-- Data will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Transactions Page -->
+      <section id="transactions" class="page-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Transactions</h1>
+            <p class="page-subtitle">Track income and expenses</p>
+          </div>
+          <button class="btn btn-primary" onclick="openTransactionModal()">
+            + Add Transaction
+          </button>
+        </div>
+
+        <div class="filter-bar">
+          <select id="transaction-filter-type" onchange="loadTransactions()">
+            <option value="">All Types</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+          <select id="transaction-filter-status" onchange="loadTransactions()">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="excluded">Excluded</option>
+          </select>
+          <input type="text" id="transaction-search" placeholder="Search..." onkeyup="debounceLoadTransactions()">
+          <input type="date" id="transaction-start-date" onchange="loadTransactions()">
+          <input type="date" id="transaction-end-date" onchange="loadTransactions()">
+        </div>
+
+        <div class="card">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Tax</th>
+                  <th>Net</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="transactions-table">
+                <!-- Data will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Package Modal -->
+  <div id="package-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="package-modal-title">Add Package</h3>
+        <button class="modal-close" onclick="closeModal('package-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="package-form">
+          <input type="hidden" id="package-id">
+          <div class="form-group">
+            <label>Package Name</label>
+            <input type="text" id="package-name" required placeholder="e.g., Premium Package">
+          </div>
+          <div class="form-group">
+            <label>Price ($)</label>
+            <input type="number" id="package-price" required placeholder="1000" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>Expenses</label>
+            <div id="expenses-list" class="expenses-list">
+              <!-- Dynamic expense rows -->
+            </div>
+            <button type="button" class="add-expense-btn" onclick="addExpenseRow()">+ Add Expense</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('package-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="savePackage()">Save Package</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Modal -->
+  <div id="teacher-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="teacher-modal-title">Add Teacher</h3>
+        <button class="modal-close" onclick="closeModal('teacher-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="teacher-form">
+          <input type="hidden" id="teacher-id">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="teacher-name" required placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="teacher-email" required placeholder="john@example.com">
+          </div>
+          <div class="form-group">
+            <label>Hourly Rate ($)</label>
+            <input type="number" id="teacher-hourly-rate" required placeholder="50" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="teacher-status">
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('teacher-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveTeacher()">Save Teacher</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Modal -->
+  <div id="session-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="session-modal-title">Add Session</h3>
+        <button class="modal-close" onclick="closeModal('session-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="session-form">
+          <input type="hidden" id="session-id">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Teacher</label>
+              <select id="session-teacher" required>
+                <option value="">Select Teacher</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Package</label>
+              <select id="session-package" required>
+                <option value="">Select Package</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Session Date</label>
+              <input type="datetime-local" id="session-date" required>
+            </div>
+            <div class="form-group">
+              <label>Duration (hours)</label>
+              <input type="number" id="session-duration" required placeholder="2" step="0.5">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="session-title" placeholder="Session title (optional)">
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea id="session-notes" placeholder="Session notes (optional)"></textarea>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="session-confirmed"> Confirmed
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('session-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveSession()">Save Session</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transaction Modal -->
+  <div id="transaction-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="transaction-modal-title">Add Transaction</h3>
+        <button class="modal-close" onclick="closeModal('transaction-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="transaction-form">
+          <input type="hidden" id="transaction-id">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" id="transaction-name" required placeholder="Transaction name">
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Type</label>
+              <select id="transaction-type" required>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount ($)</label>
+              <input type="number" id="transaction-amount" required placeholder="1000" step="0.01">
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="datetime-local" id="transaction-date" required>
+            </div>
+            <div class="form-group">
+              <label>Tax Rate (%)</label>
+              <input type="number" id="transaction-tax-rate" placeholder="10" step="0.1" min="0" max="100">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Tags (comma-separated)</label>
+            <input type="text" id="transaction-tags" placeholder="student-payment, premium">
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea id="transaction-notes" placeholder="Optional notes"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('transaction-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveTransaction()">Save Transaction</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profit Modal -->
+  <div id="profit-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Package Profit Analysis</h3>
+        <button class="modal-close" onclick="closeModal('profit-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="profit-details">
+          <!-- Profit details will be loaded here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('profit-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script>
+    const API_BASE = '';
+
+    // Utility functions
+    function formatMoney(amount) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(amount || 0);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    function formatDateTime(dateString) {
+      if (!dateString) return '-';
+      return new Date(dateString).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    async function api(endpoint, options = {}) {
+      try {
+        const response = await fetch(`${API_BASE}${endpoint}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+          },
+          ...options
+        });
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          throw new Error(error.message || 'Request failed');
+        }
+        if (response.status === 204 || options.method === 'DELETE') {
+          return null;
+        }
+        return response.json();
+      } catch (error) {
+        showToast(error.message, 'error');
+        throw error;
+      }
+    }
+
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const page = item.dataset.page;
+        
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        
+        document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(page).classList.add('active');
+        
+        loadPageData(page);
+      });
+    });
+
+    function loadPageData(page) {
+      switch(page) {
+        case 'dashboard': loadDashboard(); break;
+        case 'packages': loadPackages(); break;
+        case 'teachers': loadTeachers(); break;
+        case 'sessions': loadSessions(); break;
+        case 'transactions': loadTransactions(); break;
+      }
+    }
+
+    // Modal functions
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Dashboard
+    async function loadDashboard() {
+      const startDate = document.getElementById('dashboard-start-date').value;
+      const endDate = document.getElementById('dashboard-end-date').value;
+      
+      let query = '';
+      if (startDate) query += `startDate=${startDate}&`;
+      if (endDate) query += `endDate=${endDate}&`;
+      
+      try {
+        const [dashboard, salaries] = await Promise.all([
+          api(`/dashboard?${query}`),
+          api(`/dashboard/teacher-salaries?${query}`)
+        ]);
+        
+        document.getElementById('dashboard-stats').innerHTML = `
+          <div class="stat-card">
+            <div class="stat-label">Total Income</div>
+            <div class="stat-value income">${formatMoney(dashboard.totalIncome)}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Expenses</div>
+            <div class="stat-value expense">${formatMoney(dashboard.totalExpenses)}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Gross Profit</div>
+            <div class="stat-value ${dashboard.grossProfit >= 0 ? 'income' : 'expense'}">${formatMoney(dashboard.grossProfit)}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Teacher Salaries</div>
+            <div class="stat-value expense">${formatMoney(dashboard.totalTeacherSalaries)}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Net Profit</div>
+            <div class="stat-value ${dashboard.netProfit >= 0 ? 'income' : 'expense'}">${formatMoney(dashboard.netProfit)}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Tax</div>
+            <div class="stat-value neutral">${formatMoney(dashboard.totalTax)}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Session Packages</div>
+            <div class="stat-value neutral">${dashboard.activeSessionPackages || 0}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Subscription Packages</div>
+            <div class="stat-value neutral">${dashboard.activeSubscriptionPackages || 0}</div>
+          </div>
+        `;
+        
+        document.getElementById('teacher-salaries-table').innerHTML = salaries.length ? 
+          salaries.map(s => `
+            <tr>
+              <td>${s.teacherName}</td>
+              <td>${s.totalHours} hrs</td>
+              <td class="money">${formatMoney(s.totalPay)}</td>
+            </tr>
+          `).join('') :
+          '<tr><td colspan="3" class="empty-state">No salary data for this period</td></tr>';
+      } catch (error) {
+        console.error('Failed to load dashboard:', error);
+      }
+    }
+
+    // Packages
+    async function loadPackages() {
+      try {
+        const packages = await api('/packages');
+        const tbody = document.getElementById('packages-table');
+        
+        if (!packages.length) {
+          tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No packages yet. Create your first package!</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = packages.map(pkg => {
+          const totalExpenses = Object.values(pkg.expenses || {}).reduce((a, b) => a + b, 0);
+          const profit = pkg.price - totalExpenses;
+          const expensesList = Object.entries(pkg.expenses || {})
+            .map(([k, v]) => `${k}: ${formatMoney(v)}`)
+            .join(', ');
+          
+          return `
+            <tr>
+              <td><strong>${pkg.packageName}</strong></td>
+              <td class="money">${formatMoney(pkg.price)}</td>
+              <td>${expensesList || '-'}</td>
+              <td class="money ${profit >= 0 ? 'income' : 'expense'}">${formatMoney(profit)}</td>
+              <td class="actions">
+                <button class="action-btn" onclick="viewProfit('${pkg._id}')">📊</button>
+                <button class="action-btn" onclick="editPackage('${pkg._id}')">✏️</button>
+                <button class="action-btn danger" onclick="deletePackage('${pkg._id}')">🗑️</button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (error) {
+        console.error('Failed to load packages:', error);
+      }
+    }
+
+    function openPackageModal(pkg = null) {
+      document.getElementById('package-modal-title').textContent = pkg ? 'Edit Package' : 'Add Package';
+      document.getElementById('package-id').value = pkg?._id || '';
+      document.getElementById('package-name').value = pkg?.packageName || '';
+      document.getElementById('package-price').value = pkg?.price || '';
+      
+      const expensesList = document.getElementById('expenses-list');
+      expensesList.innerHTML = '';
+      
+      if (pkg?.expenses) {
+        Object.entries(pkg.expenses).forEach(([key, value]) => {
+          addExpenseRow(key, value);
+        });
+      } else {
+        addExpenseRow();
+      }
+      
+      openModal('package-modal');
+    }
+
+    function addExpenseRow(key = '', value = '') {
+      const list = document.getElementById('expenses-list');
+      const row = document.createElement('div');
+      row.className = 'expense-row';
+      row.innerHTML = `
+        <input type="text" placeholder="Category (e.g., infrastructure)" value="${key}">
+        <input type="number" placeholder="Amount" step="0.01" value="${value}">
+        <button type="button" class="remove-expense" onclick="this.parentElement.remove()">×</button>
+      `;
+      list.appendChild(row);
+    }
+
+    async function savePackage() {
+      const id = document.getElementById('package-id').value;
+      const expenses = {};
+      
+      document.querySelectorAll('#expenses-list .expense-row').forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const key = inputs[0].value.trim();
+        const value = parseFloat(inputs[1].value) || 0;
+        if (key) expenses[key] = value;
+      });
+      
+      const data = {
+        packageName: document.getElementById('package-name').value,
+        price: parseFloat(document.getElementById('package-price').value),
+        expenses
+      };
+      
+      try {
+        if (id) {
+          await api(`/packages/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+          showToast('Package updated successfully');
+        } else {
+          await api('/packages', { method: 'POST', body: JSON.stringify(data) });
+          showToast('Package created successfully');
+        }
+        closeModal('package-modal');
+        loadPackages();
+      } catch (error) {
+        console.error('Failed to save package:', error);
+      }
+    }
+
+    async function editPackage(id) {
+      try {
+        const pkg = await api(`/packages/${id}`);
+        openPackageModal(pkg);
+      } catch (error) {
+        console.error('Failed to load package:', error);
+      }
+    }
+
+    async function deletePackage(id) {
+      if (!confirm('Are you sure you want to delete this package?')) return;
+      try {
+        await api(`/packages/${id}`, { method: 'DELETE' });
+        showToast('Package deleted successfully');
+        loadPackages();
+      } catch (error) {
+        console.error('Failed to delete package:', error);
+      }
+    }
+
+    async function viewProfit(id) {
+      try {
+        const profit = await api(`/packages/${id}/calculate`);
+        const expensesList = Object.entries(profit.expenses || {})
+          .map(([k, v]) => `<div class="profit-item"><div class="profit-item-label">${k}</div><div class="profit-item-value expense">${formatMoney(v)}</div></div>`)
+          .join('');
+        
+        document.getElementById('profit-details').innerHTML = `
+          <h4 style="margin-bottom: 16px;">${profit.packageName}</h4>
+          <div class="profit-breakdown">
+            <div class="profit-item">
+              <div class="profit-item-label">Price</div>
+              <div class="profit-item-value income">${formatMoney(profit.price)}</div>
+            </div>
+            <div class="profit-item">
+              <div class="profit-item-label">Total Expenses</div>
+              <div class="profit-item-value expense">${formatMoney(profit.totalExpenses)}</div>
+            </div>
+            <div class="profit-item">
+              <div class="profit-item-label">Profit</div>
+              <div class="profit-item-value ${profit.profit >= 0 ? 'income' : 'expense'}">${formatMoney(profit.profit)}</div>
+            </div>
+          </div>
+          <h5 style="margin: 20px 0 12px;">Expense Breakdown</h5>
+          <div class="profit-breakdown">
+            ${expensesList || '<div class="profit-item"><div class="profit-item-label">No expenses</div></div>'}
+          </div>
+        `;
+        openModal('profit-modal');
+      } catch (error) {
+        console.error('Failed to load profit:', error);
+      }
+    }
+
+    // Teachers
+    async function loadTeachers() {
+      try {
+        const teachers = await api('/teachers');
+        const tbody = document.getElementById('teachers-table');
+        
+        // Also update dropdowns
+        updateTeacherDropdowns(teachers);
+        
+        if (!teachers.length) {
+          tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No teachers yet. Add your first teacher!</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = teachers.map(t => `
+          <tr>
+            <td><strong>${t.name}</strong></td>
+            <td>${t.email}</td>
+            <td class="money">${formatMoney(t.hourlyRate)}/hr</td>
+            <td><span class="tag ${t.isActive ? 'tag-active' : 'tag-inactive'}">${t.isActive ? 'Active' : 'Inactive'}</span></td>
+            <td class="actions">
+              <button class="action-btn" onclick="toggleTeacherStatus('${t._id}', ${t.isActive})">${t.isActive ? '⏸️' : '▶️'}</button>
+              <button class="action-btn" onclick="editTeacher('${t._id}')">✏️</button>
+              <button class="action-btn danger" onclick="deleteTeacher('${t._id}')">🗑️</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error('Failed to load teachers:', error);
+      }
+    }
+
+    function updateTeacherDropdowns(teachers) {
+      const options = teachers.map(t => `<option value="${t._id}">${t.name}</option>`).join('');
+      
+      const sessionTeacher = document.getElementById('session-teacher');
+      const filterTeacher = document.getElementById('session-filter-teacher');
+      
+      sessionTeacher.innerHTML = '<option value="">Select Teacher</option>' + options;
+      filterTeacher.innerHTML = '<option value="">All Teachers</option>' + options;
+    }
+
+    function openTeacherModal(teacher = null) {
+      document.getElementById('teacher-modal-title').textContent = teacher ? 'Edit Teacher' : 'Add Teacher';
+      document.getElementById('teacher-id').value = teacher?._id || '';
+      document.getElementById('teacher-name').value = teacher?.name || '';
+      document.getElementById('teacher-email').value = teacher?.email || '';
+      document.getElementById('teacher-hourly-rate').value = teacher?.hourlyRate || '';
+      document.getElementById('teacher-status').value = teacher?.isActive !== false ? 'true' : 'false';
+      openModal('teacher-modal');
+    }
+
+    async function saveTeacher() {
+      const id = document.getElementById('teacher-id').value;
+      const data = {
+        name: document.getElementById('teacher-name').value,
+        email: document.getElementById('teacher-email').value,
+        hourlyRate: parseFloat(document.getElementById('teacher-hourly-rate').value),
+        isActive: document.getElementById('teacher-status').value === 'true'
+      };
+      
+      try {
+        if (id) {
+          await api(`/teachers/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+          showToast('Teacher updated successfully');
+        } else {
+          await api('/teachers', { method: 'POST', body: JSON.stringify(data) });
+          showToast('Teacher created successfully');
+        }
+        closeModal('teacher-modal');
+        loadTeachers();
+      } catch (error) {
+        console.error('Failed to save teacher:', error);
+      }
+    }
+
+    async function editTeacher(id) {
+      try {
+        const teacher = await api(`/teachers/${id}`);
+        openTeacherModal(teacher);
+      } catch (error) {
+        console.error('Failed to load teacher:', error);
+      }
+    }
+
+    async function deleteTeacher(id) {
+      if (!confirm('Are you sure you want to delete this teacher?')) return;
+      try {
+        await api(`/teachers/${id}`, { method: 'DELETE' });
+        showToast('Teacher deleted successfully');
+        loadTeachers();
+      } catch (error) {
+        console.error('Failed to delete teacher:', error);
+      }
+    }
+
+    async function toggleTeacherStatus(id, isActive) {
+      try {
+        await api(`/teachers/${id}/${isActive ? 'deactivate' : 'activate'}`, { method: 'PATCH' });
+        showToast(`Teacher ${isActive ? 'deactivated' : 'activated'} successfully`);
+        loadTeachers();
+      } catch (error) {
+        console.error('Failed to toggle teacher status:', error);
+      }
+    }
+
+    // Sessions
+    let packagesCache = [];
+
+    async function loadSessions() {
+      try {
+        // Load packages for dropdown
+        if (!packagesCache.length) {
+          packagesCache = await api('/packages');
+          updatePackageDropdowns(packagesCache);
+        }
+        
+        const teacherId = document.getElementById('session-filter-teacher').value;
+        const status = document.getElementById('session-filter-status').value;
+        const startDate = document.getElementById('session-start-date').value;
+        const endDate = document.getElementById('session-end-date').value;
+        
+        let sessions;
+        if (teacherId) {
+          sessions = await api(`/sessions/by-teacher/${teacherId}`);
+        } else if (startDate && endDate) {
+          sessions = await api(`/sessions/by-date-range?startDate=${startDate}&endDate=${endDate}`);
+        } else if (status === 'confirmed') {
+          sessions = await api('/sessions/confirmed');
+        } else {
+          sessions = await api('/sessions');
+        }
+        
+        // Filter by status if needed
+        if (status === 'unconfirmed') {
+          sessions = sessions.filter(s => !s.isConfirmed);
+        } else if (status === 'confirmed' && !teacherId) {
+          sessions = sessions.filter(s => s.isConfirmed);
+        }
+        
+        const tbody = document.getElementById('sessions-table');
+        
+        if (!sessions.length) {
+          tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No sessions found</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = sessions.map(s => `
+          <tr>
+            <td>${formatDateTime(s.sessionDate)}</td>
+            <td>${s.title || '-'}</td>
+            <td>${s.teacher?.name || 'Unknown'}</td>
+            <td>${s.package?.packageName || 'Unknown'}</td>
+            <td>${s.duration} hrs</td>
+            <td><span class="tag ${s.isConfirmed ? 'tag-confirmed' : 'tag-inactive'}">${s.isConfirmed ? 'Confirmed' : 'Pending'}</span></td>
+            <td class="actions">
+              <button class="action-btn" onclick="toggleSessionConfirm('${s._id}', ${s.isConfirmed})">${s.isConfirmed ? '❌' : '✅'}</button>
+              <button class="action-btn" onclick="editSession('${s._id}')">✏️</button>
+              <button class="action-btn danger" onclick="deleteSession('${s._id}')">🗑️</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error('Failed to load sessions:', error);
+      }
+    }
+
+    function updatePackageDropdowns(packages) {
+      const options = packages.map(p => `<option value="${p._id}">${p.packageName}</option>`).join('');
+      document.getElementById('session-package').innerHTML = '<option value="">Select Package</option>' + options;
+    }
+
+    function openSessionModal(session = null) {
+      document.getElementById('session-modal-title').textContent = session ? 'Edit Session' : 'Add Session';
+      document.getElementById('session-id').value = session?._id || '';
+      document.getElementById('session-teacher').value = session?.teacherId || '';
+      document.getElementById('session-package').value = session?.packageId || '';
+      document.getElementById('session-date').value = session?.sessionDate ? new Date(session.sessionDate).toISOString().slice(0, 16) : '';
+      document.getElementById('session-duration').value = session?.duration || '';
+      document.getElementById('session-title').value = session?.title || '';
+      document.getElementById('session-notes').value = session?.notes || '';
+      document.getElementById('session-confirmed').checked = session?.isConfirmed || false;
+      openModal('session-modal');
+    }
+
+    async function saveSession() {
+      const id = document.getElementById('session-id').value;
+      const data = {
+        teacherId: document.getElementById('session-teacher').value,
+        packageId: document.getElementById('session-package').value,
+        sessionDate: new Date(document.getElementById('session-date').value).toISOString(),
+        duration: parseFloat(document.getElementById('session-duration').value),
+        title: document.getElementById('session-title').value || undefined,
+        notes: document.getElementById('session-notes').value || undefined,
+        isConfirmed: document.getElementById('session-confirmed').checked
+      };
+      
+      try {
+        if (id) {
+          await api(`/sessions/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+          showToast('Session updated successfully');
+        } else {
+          await api('/sessions', { method: 'POST', body: JSON.stringify(data) });
+          showToast('Session created successfully');
+        }
+        closeModal('session-modal');
+        loadSessions();
+      } catch (error) {
+        console.error('Failed to save session:', error);
+      }
+    }
+
+    async function editSession(id) {
+      try {
+        const session = await api(`/sessions/${id}`);
+        openSessionModal(session);
+      } catch (error) {
+        console.error('Failed to load session:', error);
+      }
+    }
+
+    async function deleteSession(id) {
+      if (!confirm('Are you sure you want to delete this session?')) return;
+      try {
+        await api(`/sessions/${id}`, { method: 'DELETE' });
+        showToast('Session deleted successfully');
+        loadSessions();
+      } catch (error) {
+        console.error('Failed to delete session:', error);
+      }
+    }
+
+    async function toggleSessionConfirm(id, isConfirmed) {
+      try {
+        await api(`/sessions/${id}/${isConfirmed ? 'unconfirm' : 'confirm'}`, { method: 'PATCH' });
+        showToast(`Session ${isConfirmed ? 'unconfirmed' : 'confirmed'} successfully`);
+        loadSessions();
+      } catch (error) {
+        console.error('Failed to toggle session confirmation:', error);
+      }
+    }
+
+    // Transactions
+    let transactionDebounce;
+    function debounceLoadTransactions() {
+      clearTimeout(transactionDebounce);
+      transactionDebounce = setTimeout(loadTransactions, 300);
+    }
+
+    async function loadTransactions() {
+      try {
+        const type = document.getElementById('transaction-filter-type').value;
+        const status = document.getElementById('transaction-filter-status').value;
+        const search = document.getElementById('transaction-search').value;
+        const startDate = document.getElementById('transaction-start-date').value;
+        const endDate = document.getElementById('transaction-end-date').value;
+        
+        let query = '';
+        if (type) query += `type=${type}&`;
+        if (status) query += `status=${status}&`;
+        if (search) query += `search=${encodeURIComponent(search)}&`;
+        if (startDate) query += `startDate=${startDate}&`;
+        if (endDate) query += `endDate=${endDate}&`;
+        
+        const transactions = await api(`/transactions?${query}`);
+        const tbody = document.getElementById('transactions-table');
+        
+        if (!transactions.length) {
+          tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No transactions found</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = transactions.map(t => `
+          <tr>
+            <td>${formatDate(t.transactionDate)}</td>
+            <td><strong>${t.name}</strong></td>
+            <td><span class="tag ${t.type === 'income' ? 'tag-income' : 'tag-expense'}">${t.type}</span></td>
+            <td class="money">${formatMoney(t.amount)}</td>
+            <td class="money">${formatMoney(t.taxAmount)}</td>
+            <td class="money ${t.type === 'income' ? 'income' : 'expense'}">${formatMoney(t.netAmount)}</td>
+            <td><span class="tag ${t.status === 'active' ? 'tag-active' : 'tag-inactive'}">${t.status}</span></td>
+            <td class="actions">
+              <button class="action-btn" onclick="toggleTransactionStatus('${t._id}', '${t.status}')">${t.status === 'active' ? '🚫' : '✅'}</button>
+              <button class="action-btn" onclick="editTransaction('${t._id}')">✏️</button>
+              <button class="action-btn danger" onclick="deleteTransaction('${t._id}')">🗑️</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error('Failed to load transactions:', error);
+      }
+    }
+
+    function openTransactionModal(transaction = null) {
+      document.getElementById('transaction-modal-title').textContent = transaction ? 'Edit Transaction' : 'Add Transaction';
+      document.getElementById('transaction-id').value = transaction?._id || '';
+      document.getElementById('transaction-name').value = transaction?.name || '';
+      document.getElementById('transaction-type').value = transaction?.type || 'income';
+      document.getElementById('transaction-amount').value = transaction?.amount || '';
+      document.getElementById('transaction-date').value = transaction?.transactionDate ? new Date(transaction.transactionDate).toISOString().slice(0, 16) : '';
+      document.getElementById('transaction-tax-rate').value = transaction?.taxRate ? (transaction.taxRate * 100) : '';
+      document.getElementById('transaction-tags').value = transaction?.tags?.join(', ') || '';
+      document.getElementById('transaction-notes').value = transaction?.notes || '';
+      openModal('transaction-modal');
+    }
+
+    async function saveTransaction() {
+      const id = document.getElementById('transaction-id').value;
+      const tagsInput = document.getElementById('transaction-tags').value;
+      const taxRateInput = document.getElementById('transaction-tax-rate').value;
+      
+      const data = {
+        name: document.getElementById('transaction-name').value,
+        type: document.getElementById('transaction-type').value,
+        amount: parseFloat(document.getElementById('transaction-amount').value),
+        transactionDate: new Date(document.getElementById('transaction-date').value).toISOString(),
+        taxRate: taxRateInput ? parseFloat(taxRateInput) / 100 : 0,
+        tags: tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(Boolean) : [],
+        notes: document.getElementById('transaction-notes').value || undefined
+      };
+      
+      try {
+        if (id) {
+          await api(`/transactions/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+          showToast('Transaction updated successfully');
+        } else {
+          await api('/transactions', { method: 'POST', body: JSON.stringify(data) });
+          showToast('Transaction created successfully');
+        }
+        closeModal('transaction-modal');
+        loadTransactions();
+      } catch (error) {
+        console.error('Failed to save transaction:', error);
+      }
+    }
+
+    async function editTransaction(id) {
+      try {
+        const transaction = await api(`/transactions/${id}`);
+        openTransactionModal(transaction);
+      } catch (error) {
+        console.error('Failed to load transaction:', error);
+      }
+    }
+
+    async function deleteTransaction(id) {
+      if (!confirm('Are you sure you want to delete this transaction?')) return;
+      try {
+        await api(`/transactions/${id}`, { method: 'DELETE' });
+        showToast('Transaction deleted successfully');
+        loadTransactions();
+      } catch (error) {
+        console.error('Failed to delete transaction:', error);
+      }
+    }
+
+    async function toggleTransactionStatus(id, status) {
+      try {
+        await api(`/transactions/${id}/${status === 'active' ? 'exclude' : 'activate'}`, { method: 'PATCH' });
+        showToast(`Transaction ${status === 'active' ? 'excluded' : 'activated'} successfully`);
+        loadTransactions();
+      } catch (error) {
+        console.error('Failed to toggle transaction status:', error);
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDashboard();
+      
+      // Preload teachers for dropdowns
+      loadTeachers().then(() => {
+        // After teachers are loaded, load packages for session dropdown
+        api('/packages').then(packages => {
+          packagesCache = packages;
+          updatePackageDropdowns(packages);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+
