@@ -21,3 +21,4 @@ RUN npm install --production
 COPY --from=development /usr/src/app/dist ./dist
 
 CMD ["npm", "run", "start:prod"]
+

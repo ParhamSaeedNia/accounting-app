@@ -19,9 +19,9 @@ services:
     depends_on:
       - mongodb
 
-  app:
+  backend:
     build:
-      context: .
+      context: ./backend
       target: development
     ports:
       - '3000:3000'
@@ -29,16 +29,38 @@ services:
       - mongodb
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/accounting
+      - PORT=3000
     volumes:
-      - .:/usr/src/app
+      - ./backend:/usr/src/app
       - /usr/src/app/node_modules
     develop:
       watch:
         - action: sync
-          path: ./src
+          path: ./backend/src
           target: /usr/src/app/src
         - action: rebuild
-          path: package.json
+          path: ./backend/package.json
+
+  frontend:
+    build:
+      context: ./frontend
+      target: development
+    ports:
+      - '5173:5173'
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend/src
+          target: /usr/src/app/src
+        - action: rebuild
+          path: ./frontend/package.json
 
 volumes:
   mongodb_data:

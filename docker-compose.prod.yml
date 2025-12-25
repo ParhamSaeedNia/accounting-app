@@ -1,13 +1,16 @@
 version: '3.8'
 
 services:
-  app:
+  backend:
     build:
-      context: .
+      context: ./backend
+      target: production
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      target: production
     ports:
-      - '3000:3000'
-    depends_on:
-      - mongodb
-    environment:
-      - NODE_ENV=production
-      - MONGODB_URI=mongodb://mongodb:27017/accounting
+      - '80:80'
+    restart: always
