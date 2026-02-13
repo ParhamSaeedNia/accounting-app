@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { DashboardService } from './dashboard.service';
 import { Transaction } from '../transactions/transactions.entity';
 import { Session } from '../sessions/sessions.entity';
@@ -10,10 +9,6 @@ import { TransactionFilterDto } from '../transactions/dto/request/transaction-fi
 
 describe('DashboardService', () => {
   let service: DashboardService;
-  let transactionModel: Model<Transaction>;
-  let sessionModel: Model<Session>;
-  let teacherModel: Model<Teacher>;
-  let packageModel: Model<Package>;
 
   const mockTransactionModel = {
     find: jest.fn(),
@@ -53,12 +48,6 @@ describe('DashboardService', () => {
     }).compile();
 
     service = module.get<DashboardService>(DashboardService);
-    transactionModel = module.get<Model<Transaction>>(
-      getModelToken(Transaction.name),
-    );
-    sessionModel = module.get<Model<Session>>(getModelToken(Session.name));
-    teacherModel = module.get<Model<Teacher>>(getModelToken(Teacher.name));
-    packageModel = module.get<Model<Package>>(getModelToken(Package.name));
   });
 
   afterEach(() => {

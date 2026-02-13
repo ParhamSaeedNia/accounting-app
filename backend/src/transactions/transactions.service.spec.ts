@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { TransactionsService } from './transactions.service';
 import { Transaction, TransactionType } from './transactions.entity';
 import { CreateTransactionDto } from './dto/request/create-transaction.dto';
@@ -13,27 +12,29 @@ import { NotFoundException } from '@nestjs/common';
 
 describe('TransactionsService', () => {
   let service: TransactionsService;
-  let transactionModel: Model<Transaction>;
 
-  const mockTransactionModel: any = jest.fn();
-
-  const buildTransactionDocument = (dto: any) => {
+  const buildTransactionDocument = (dto: Record<string, unknown>) => {
     const transactionDoc = {
       _id: 'transaction1',
       ...dto,
+      save: jest.fn(),
     };
 
-    transactionDoc.save = jest.fn().mockResolvedValue(transactionDoc);
+    transactionDoc.save.mockResolvedValue(transactionDoc);
     return transactionDoc;
   };
 
-  mockTransactionModel.find = jest.fn();
-  mockTransactionModel.findById = jest.fn();
-  mockTransactionModel.findByIdAndUpdate = jest.fn();
-  mockTransactionModel.deleteOne = jest.fn();
+  const mockTransactionModel = Object.assign(jest.fn(), {
+    find: jest.fn(),
+    findById: jest.fn(),
+    findByIdAndUpdate: jest.fn(),
+    deleteOne: jest.fn(),
+  });
 
   beforeEach(async () => {
-    mockTransactionModel.mockImplementation((dto) => buildTransactionDocument(dto));
+    mockTransactionModel.mockImplementation((dto: Record<string, unknown>) =>
+      buildTransactionDocument(dto),
+    );
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -46,9 +47,6 @@ describe('TransactionsService', () => {
     }).compile();
 
     service = module.get<TransactionsService>(TransactionsService);
-    transactionModel = module.get<Model<Transaction>>(
-      getModelToken(Transaction.name),
-    );
   });
 
   afterEach(() => {
@@ -80,7 +78,8 @@ describe('TransactionsService', () => {
         }),
       );
 
-      const transactionInstance = mockTransactionModel.mock.results[0]?.value;
+      const transactionInstance = mockTransactionModel.mock.results[0]
+        ?.value as { save: jest.Mock };
       expect(transactionInstance.save).toHaveBeenCalled();
       expect(result.taxAmount).toBe(100);
       expect(result.netAmount).toBe(900);
@@ -104,7 +103,8 @@ describe('TransactionsService', () => {
         }),
       );
 
-      const transactionInstance = mockTransactionModel.mock.results[0]?.value;
+      const transactionInstance = mockTransactionModel.mock.results[0]
+        ?.value as { save: jest.Mock };
       expect(transactionInstance.save).toHaveBeenCalled();
       expect(result.taxAmount).toBe(0);
       expect(result.netAmount).toBe(1000);
@@ -271,18 +271,19 @@ describe('TransactionsService', () => {
         limit: 10,
       };
 
-      mockTransactionModel.find.mockReturnValue({
+      const chainMock = {
         sort: jest.fn().mockReturnThis(),
         skip: jest.fn().mockReturnThis(),
         limit: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue([]),
-      });
+      };
+
+      mockTransactionModel.find.mockReturnValue(chainMock);
 
       await service.findWithFilters(filters);
 
-      const findCall = mockTransactionModel.find.mock.results[0].value;
-      expect(findCall.skip).toHaveBeenCalledWith(10);
-      expect(findCall.limit).toHaveBeenCalledWith(10);
+      expect(chainMock.skip).toHaveBeenCalledWith(10);
+      expect(chainMock.limit).toHaveBeenCalledWith(10);
     });
 
     it('should apply sorting', async () => {
@@ -291,17 +292,18 @@ describe('TransactionsService', () => {
         sortOrder: SortOrder.DESC,
       };
 
-      mockTransactionModel.find.mockReturnValue({
+      const chainMock = {
         sort: jest.fn().mockReturnThis(),
         skip: jest.fn().mockReturnThis(),
         limit: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue([]),
-      });
+      };
+
+      mockTransactionModel.find.mockReturnValue(chainMock);
 
       await service.findWithFilters(filters);
 
-      const findCall = mockTransactionModel.find.mock.results[0].value;
-      expect(findCall.sort).toHaveBeenCalledWith({ amount: -1 });
+      expect(chainMock.sort).toHaveBeenCalledWith({ amount: -1 });
     });
   });
 
@@ -410,9 +412,7 @@ describe('TransactionsService', () => {
       });
 
       await expect(service.remove(id)).rejects.toThrow(NotFoundException);
-      await expect(service.remove(id)).rejects.toThrow(
-        'Transaction not found',
-      );
+      await expect(service.remove(id)).rejects.toThrow('Transaction not found');
     });
   });
 
@@ -523,4 +523,3 @@ describe('TransactionsService', () => {
     });
   });
 });
-

@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { SessionsService } from './sessions.service';
 import { Session } from './sessions.entity';
 import { TeachersService } from '../teachers/teachers.service';
@@ -10,38 +9,43 @@ import { NotFoundException } from '@nestjs/common';
 
 describe('SessionsService', () => {
   let service: SessionsService;
-  let sessionModel: Model<Session>;
-  let teachersService: TeachersService;
-  let packagesService: PackagesService;
 
-  const mockSessionModel: any = jest.fn();
+  const buildSessionDocument = (dto: CreateSessionDto) => {
+    const toObjectValue = {
+      _id: 'session1',
+      teacherId: dto.teacherId,
+      packageId: dto.packageId,
+      sessionDate: dto.sessionDate,
+      duration: dto.duration,
+      isConfirmed: dto.isConfirmed ?? false,
+      title: dto.title,
+      notes: dto.notes,
+    };
 
-  const buildSessionDocument = (dto: any) => {
     const sessionDoc = {
       _id: 'session1',
       isConfirmed: dto.isConfirmed ?? false,
-      ...dto,
+      teacherId: dto.teacherId,
+      packageId: dto.packageId,
+      sessionDate: dto.sessionDate,
+      duration: dto.duration,
+      title: dto.title,
+      notes: dto.notes,
+      toObject: jest.fn().mockReturnValue(toObjectValue),
+      save: jest.fn(),
+      toString: () => '',
     };
 
-    sessionDoc.toObject = jest.fn().mockReturnValue({
-      _id: sessionDoc._id,
-      teacherId: sessionDoc.teacherId,
-      packageId: sessionDoc.packageId,
-      sessionDate: sessionDoc.sessionDate,
-      duration: sessionDoc.duration,
-      isConfirmed: sessionDoc.isConfirmed,
-      title: sessionDoc.title,
-      notes: sessionDoc.notes,
-    });
-
-    sessionDoc.save = jest.fn().mockResolvedValue(sessionDoc);
+    sessionDoc.save.mockResolvedValue(sessionDoc);
     return sessionDoc;
   };
 
-  mockSessionModel.find = jest.fn();
-  mockSessionModel.findById = jest.fn();
-  mockSessionModel.findByIdAndUpdate = jest.fn();
-  mockSessionModel.deleteOne = jest.fn();
+  const mockSessionModel = Object.assign(jest.fn(), {
+    find: jest.fn(),
+    findById: jest.fn(),
+    findByIdAndUpdate: jest.fn(),
+    deleteOne: jest.fn(),
+  });
 
   const mockTeachersService = {
     findOne: jest.fn(),
@@ -52,7 +56,9 @@ describe('SessionsService', () => {
   };
 
   beforeEach(async () => {
-    mockSessionModel.mockImplementation((dto) => buildSessionDocument(dto));
+    mockSessionModel.mockImplementation((dto: CreateSessionDto) =>
+      buildSessionDocument(dto),
+    );
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -73,9 +79,6 @@ describe('SessionsService', () => {
     }).compile();
 
     service = module.get<SessionsService>(SessionsService);
-    sessionModel = module.get<Model<Session>>(getModelToken(Session.name));
-    teachersService = module.get<TeachersService>(TeachersService);
-    packagesService = module.get<PackagesService>(PackagesService);
   });
 
   afterEach(() => {
@@ -107,14 +110,15 @@ describe('SessionsService', () => {
         price: 1000,
       };
 
-      // mockSessionModel is now a constructor function
       mockTeachersService.findOne.mockResolvedValue(mockTeacher);
       mockPackagesService.findOne.mockResolvedValue(mockPackage);
 
       const result = await service.create(createSessionDto);
 
       expect(mockSessionModel).toHaveBeenCalledWith(createSessionDto);
-      const sessionInstance = mockSessionModel.mock.results[0]?.value;
+      const sessionInstance = mockSessionModel.mock.results[0]?.value as {
+        save: jest.Mock;
+      };
       expect(sessionInstance.save).toHaveBeenCalled();
       expect(result).toBeDefined();
       expect(mockTeachersService.findOne).toHaveBeenCalledWith('teacher1');
@@ -223,6 +227,16 @@ describe('SessionsService', () => {
         exec: jest.fn().mockResolvedValue(mockSessions),
       });
 
+      mockTeachersService.findOne.mockResolvedValue({
+        _id: 'teacher1',
+        name: 'John Doe',
+      });
+
+      mockPackagesService.findOne.mockResolvedValue({
+        _id: packageId,
+        packageName: 'Premium Package',
+      });
+
       const result = await service.findByPackage(packageId);
 
       expect(result).toBeDefined();
@@ -249,6 +263,16 @@ describe('SessionsService', () => {
 
       mockSessionModel.find.mockReturnValue({
         exec: jest.fn().mockResolvedValue(mockSessions),
+      });
+
+      mockTeachersService.findOne.mockResolvedValue({
+        _id: 'teacher1',
+        name: 'John Doe',
+      });
+
+      mockPackagesService.findOne.mockResolvedValue({
+        _id: 'package1',
+        packageName: 'Premium Package',
       });
 
       const result = await service.findByDateRange(startDate, endDate);
@@ -282,10 +306,22 @@ describe('SessionsService', () => {
         exec: jest.fn().mockResolvedValue(mockSessions),
       });
 
+      mockTeachersService.findOne.mockResolvedValue({
+        _id: 'teacher1',
+        name: 'John Doe',
+      });
+
+      mockPackagesService.findOne.mockResolvedValue({
+        _id: 'package1',
+        packageName: 'Premium Package',
+      });
+
       const result = await service.findConfirmed();
 
       expect(result).toBeDefined();
-      expect(mockSessionModel.find).toHaveBeenCalledWith({ isConfirmed: true });
+      expect(mockSessionModel.find).toHaveBeenCalledWith({
+        isConfirmed: true,
+      });
     });
   });
 
@@ -303,6 +339,16 @@ describe('SessionsService', () => {
 
       mockSessionModel.findById.mockReturnValue({
         exec: jest.fn().mockResolvedValue(mockSession),
+      });
+
+      mockTeachersService.findOne.mockResolvedValue({
+        _id: 'teacher1',
+        name: 'John Doe',
+      });
+
+      mockPackagesService.findOne.mockResolvedValue({
+        _id: 'package1',
+        packageName: 'Premium Package',
       });
 
       const result = await service.findOne(id);
@@ -343,6 +389,16 @@ describe('SessionsService', () => {
 
       mockSessionModel.findByIdAndUpdate.mockReturnValue({
         exec: jest.fn().mockResolvedValue(mockUpdatedSession),
+      });
+
+      mockTeachersService.findOne.mockResolvedValue({
+        _id: 'teacher1',
+        name: 'John Doe',
+      });
+
+      mockPackagesService.findOne.mockResolvedValue({
+        _id: 'package1',
+        packageName: 'Premium Package',
       });
 
       const result = await service.update(id, updateSessionDto);
@@ -396,6 +452,16 @@ describe('SessionsService', () => {
         exec: jest.fn().mockResolvedValue(mockSession),
       });
 
+      mockTeachersService.findOne.mockResolvedValue({
+        _id: 'teacher1',
+        name: 'John Doe',
+      });
+
+      mockPackagesService.findOne.mockResolvedValue({
+        _id: 'package1',
+        packageName: 'Premium Package',
+      });
+
       const result = await service.confirm(id);
 
       expect(result).toBeDefined();
@@ -423,6 +489,16 @@ describe('SessionsService', () => {
 
       mockSessionModel.findByIdAndUpdate.mockReturnValue({
         exec: jest.fn().mockResolvedValue(mockSession),
+      });
+
+      mockTeachersService.findOne.mockResolvedValue({
+        _id: 'teacher1',
+        name: 'John Doe',
+      });
+
+      mockPackagesService.findOne.mockResolvedValue({
+        _id: 'package1',
+        packageName: 'Premium Package',
       });
 
       const result = await service.unconfirm(id);

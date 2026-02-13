@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { TeachersService } from './teachers.service';
 import { Teacher } from './teachers.entity';
 import { CreateTeacherDto } from './dto/request/create-teacher.dto';
@@ -8,17 +7,19 @@ import { NotFoundException } from '@nestjs/common';
 
 describe('TeachersService', () => {
   let service: TeachersService;
-  let teacherModel: Model<Teacher>;
 
-  const mockTeacherModel: any = jest.fn().mockImplementation((dto) => ({
-    ...dto,
-    save: jest.fn().mockResolvedValue(dto),
-  }));
-
-  mockTeacherModel.find = jest.fn();
-  mockTeacherModel.findById = jest.fn();
-  mockTeacherModel.findByIdAndUpdate = jest.fn();
-  mockTeacherModel.deleteOne = jest.fn();
+  const mockTeacherModel = Object.assign(
+    jest.fn().mockImplementation((dto: CreateTeacherDto) => ({
+      ...dto,
+      save: jest.fn().mockResolvedValue(dto),
+    })),
+    {
+      find: jest.fn(),
+      findById: jest.fn(),
+      findByIdAndUpdate: jest.fn(),
+      deleteOne: jest.fn(),
+    },
+  );
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,7 +33,6 @@ describe('TeachersService', () => {
     }).compile();
 
     service = module.get<TeachersService>(TeachersService);
-    teacherModel = module.get<Model<Teacher>>(getModelToken(Teacher.name));
   });
 
   afterEach(() => {
@@ -51,8 +51,6 @@ describe('TeachersService', () => {
         hourlyRate: 50,
         isActive: true,
       };
-
-      // mockTeacherModel is now a constructor function
 
       const result = await service.create(createTeacherDto);
 
@@ -240,4 +238,3 @@ describe('TeachersService', () => {
     });
   });
 });
-

@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { PackagesService } from './packages.service';
 import { Package } from './packages.entity';
 import { CreatePackageDto } from './dto/request/create-package.dto';
@@ -8,17 +7,19 @@ import { NotFoundException } from '@nestjs/common';
 
 describe('PackagesService', () => {
   let service: PackagesService;
-  let packageModel: Model<Package>;
 
-  const mockPackageModel: any = jest.fn().mockImplementation((dto) => ({
-    ...dto,
-    save: jest.fn().mockResolvedValue(dto),
-  }));
-
-  mockPackageModel.find = jest.fn();
-  mockPackageModel.findById = jest.fn();
-  mockPackageModel.findByIdAndUpdate = jest.fn();
-  mockPackageModel.deleteOne = jest.fn();
+  const mockPackageModel = Object.assign(
+    jest.fn().mockImplementation((dto: CreatePackageDto) => ({
+      ...dto,
+      save: jest.fn().mockResolvedValue(dto),
+    })),
+    {
+      find: jest.fn(),
+      findById: jest.fn(),
+      findByIdAndUpdate: jest.fn(),
+      deleteOne: jest.fn(),
+    },
+  );
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,7 +33,6 @@ describe('PackagesService', () => {
     }).compile();
 
     service = module.get<PackagesService>(PackagesService);
-    packageModel = module.get<Model<Package>>(getModelToken(Package.name));
   });
 
   afterEach(() => {
@@ -54,7 +54,8 @@ describe('PackagesService', () => {
       const result = await service.create(createPackageDto);
       expect(result).toEqual(createPackageDto);
 
-      const createdPackageInstance = mockPackageModel.mock.results[0]?.value;
+      const createdPackageInstance = mockPackageModel.mock.results[0]
+        ?.value as { save: jest.Mock };
       expect(createdPackageInstance.save).toHaveBeenCalled();
     });
   });

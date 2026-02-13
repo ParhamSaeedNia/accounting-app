@@ -2,11 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PackagesController } from './packages.controller';
 import { PackagesService } from './packages.service';
 import { CreatePackageDto } from './dto/request/create-package.dto';
-import { NotFoundException } from '@nestjs/common';
 
 describe('PackagesController', () => {
   let controller: PackagesController;
-  let service: PackagesService;
 
   const mockPackagesService = {
     create: jest.fn(),
@@ -29,7 +27,6 @@ describe('PackagesController', () => {
     }).compile();
 
     controller = module.get<PackagesController>(PackagesController);
-    service = module.get<PackagesService>(PackagesService);
   });
 
   afterEach(() => {
@@ -60,8 +57,8 @@ describe('PackagesController', () => {
       const result = await controller.create(createPackageDto);
 
       expect(result).toEqual(mockPackage);
-      expect(service.create).toHaveBeenCalledWith(createPackageDto);
-      expect(service.create).toHaveBeenCalledTimes(1);
+      expect(mockPackagesService.create).toHaveBeenCalledWith(createPackageDto);
+      expect(mockPackagesService.create).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -87,7 +84,7 @@ describe('PackagesController', () => {
       const result = await controller.findAll();
 
       expect(result).toEqual(mockPackages);
-      expect(service.findAll).toHaveBeenCalledTimes(1);
+      expect(mockPackagesService.findAll).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -106,7 +103,7 @@ describe('PackagesController', () => {
       const result = await controller.findOne(id);
 
       expect(result).toEqual(mockPackage);
-      expect(service.findOne).toHaveBeenCalledWith(id);
+      expect(mockPackagesService.findOne).toHaveBeenCalledWith(id);
     });
 
     it('should return null when package not found', async () => {
@@ -116,7 +113,7 @@ describe('PackagesController', () => {
       const result = await controller.findOne(id);
 
       expect(result).toBeNull();
-      expect(service.findOne).toHaveBeenCalledWith(id);
+      expect(mockPackagesService.findOne).toHaveBeenCalledWith(id);
     });
   });
 
@@ -140,7 +137,10 @@ describe('PackagesController', () => {
       const result = await controller.update(id, updatePackageDto);
 
       expect(result).toEqual(mockUpdatedPackage);
-      expect(service.update).toHaveBeenCalledWith(id, updatePackageDto);
+      expect(mockPackagesService.update).toHaveBeenCalledWith(
+        id,
+        updatePackageDto,
+      );
     });
   });
 
@@ -155,7 +155,7 @@ describe('PackagesController', () => {
         message: 'Package successfully deleted',
         statusCode: 200,
       });
-      expect(service.remove).toHaveBeenCalledWith(id);
+      expect(mockPackagesService.remove).toHaveBeenCalledWith(id);
     });
   });
 
@@ -175,8 +175,7 @@ describe('PackagesController', () => {
       const result = await controller.calculateProfit(id);
 
       expect(result).toEqual(mockProfit);
-      expect(service.calculateProfit).toHaveBeenCalledWith(id);
+      expect(mockPackagesService.calculateProfit).toHaveBeenCalledWith(id);
     });
   });
 });
-

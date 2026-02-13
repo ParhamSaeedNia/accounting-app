@@ -5,7 +5,6 @@ import { CreateTeacherDto } from './dto/request/create-teacher.dto';
 
 describe('TeachersController', () => {
   let controller: TeachersController;
-  let service: TeachersService;
 
   const mockTeachersService = {
     create: jest.fn(),
@@ -30,7 +29,6 @@ describe('TeachersController', () => {
     }).compile();
 
     controller = module.get<TeachersController>(TeachersController);
-    service = module.get<TeachersService>(TeachersService);
   });
 
   afterEach(() => {
@@ -62,7 +60,7 @@ describe('TeachersController', () => {
       const result = await controller.create(createTeacherDto);
 
       expect(result).toEqual(mockTeacher);
-      expect(service.create).toHaveBeenCalledWith(createTeacherDto);
+      expect(mockTeachersService.create).toHaveBeenCalledWith(createTeacherDto);
     });
   });
 
@@ -88,7 +86,7 @@ describe('TeachersController', () => {
       const result = await controller.findAll();
 
       expect(result).toEqual(mockTeachers);
-      expect(service.findAll).toHaveBeenCalledTimes(1);
+      expect(mockTeachersService.findAll).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -107,7 +105,7 @@ describe('TeachersController', () => {
       const result = await controller.findActive();
 
       expect(result).toEqual(mockTeachers);
-      expect(service.findActive).toHaveBeenCalledTimes(1);
+      expect(mockTeachersService.findActive).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -126,7 +124,7 @@ describe('TeachersController', () => {
       const result = await controller.findOne(id);
 
       expect(result).toEqual(mockTeacher);
-      expect(service.findOne).toHaveBeenCalledWith(id);
+      expect(mockTeachersService.findOne).toHaveBeenCalledWith(id);
     });
   });
 
@@ -150,7 +148,10 @@ describe('TeachersController', () => {
       const result = await controller.update(id, updateTeacherDto);
 
       expect(result).toEqual(mockUpdatedTeacher);
-      expect(service.update).toHaveBeenCalledWith(id, updateTeacherDto);
+      expect(mockTeachersService.update).toHaveBeenCalledWith(
+        id,
+        updateTeacherDto,
+      );
     });
   });
 
@@ -168,7 +169,7 @@ describe('TeachersController', () => {
       const result = await controller.activate(id);
 
       expect(result).toEqual(mockTeacher);
-      expect(service.activate).toHaveBeenCalledWith(id);
+      expect(mockTeachersService.activate).toHaveBeenCalledWith(id);
     });
   });
 
@@ -186,7 +187,7 @@ describe('TeachersController', () => {
       const result = await controller.deactivate(id);
 
       expect(result).toEqual(mockTeacher);
-      expect(service.deactivate).toHaveBeenCalledWith(id);
+      expect(mockTeachersService.deactivate).toHaveBeenCalledWith(id);
     });
   });
 
@@ -197,8 +198,7 @@ describe('TeachersController', () => {
 
       await controller.remove(id);
 
-      expect(service.remove).toHaveBeenCalledWith(id);
+      expect(mockTeachersService.remove).toHaveBeenCalledWith(id);
     });
   });
 });
-

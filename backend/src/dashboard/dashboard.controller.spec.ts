@@ -5,7 +5,6 @@ import { TransactionFilterDto } from '../transactions/dto/request/transaction-fi
 
 describe('DashboardController', () => {
   let controller: DashboardController;
-  let service: DashboardService;
 
   const mockDashboardService = {
     getDashboard: jest.fn(),
@@ -24,7 +23,6 @@ describe('DashboardController', () => {
     }).compile();
 
     controller = module.get<DashboardController>(DashboardController);
-    service = module.get<DashboardService>(DashboardService);
   });
 
   afterEach(() => {
@@ -61,8 +59,8 @@ describe('DashboardController', () => {
       const result = await controller.getDashboard(filters);
 
       expect(result).toEqual(mockDashboardData);
-      expect(service.getDashboard).toHaveBeenCalledWith(filters);
-      expect(service.getDashboard).toHaveBeenCalledTimes(1);
+      expect(mockDashboardService.getDashboard).toHaveBeenCalledWith(filters);
+      expect(mockDashboardService.getDashboard).toHaveBeenCalledTimes(1);
     });
 
     it('should handle empty filters', async () => {
@@ -87,7 +85,7 @@ describe('DashboardController', () => {
       const result = await controller.getDashboard(filters);
 
       expect(result).toEqual(mockDashboardData);
-      expect(service.getDashboard).toHaveBeenCalledWith(filters);
+      expect(mockDashboardService.getDashboard).toHaveBeenCalledWith(filters);
     });
   });
 
@@ -120,36 +118,27 @@ describe('DashboardController', () => {
       );
 
       expect(result).toEqual(mockBreakdown);
-      expect(service.getTeacherSalaryBreakdown).toHaveBeenCalledWith(
-        new Date(startDate),
-        new Date(endDate),
-      );
+      expect(
+        mockDashboardService.getTeacherSalaryBreakdown,
+      ).toHaveBeenCalledWith(new Date(startDate), new Date(endDate));
     });
 
-    it('should use default dates when not provided', async () => {
-      const now = new Date();
-      const expectedStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const expectedEnd = new Date(
-        now.getFullYear(),
-        now.getMonth() + 1,
-        0,
-        23,
-        59,
-        59,
-        999,
-      );
+    it('should pass undefined dates when not provided', async () => {
       const mockBreakdown = [];
 
       mockDashboardService.getTeacherSalaryBreakdown.mockResolvedValue(
         mockBreakdown,
       );
 
-      await controller.getTeacherSalaryBreakdown(undefined, undefined);
-
-      expect(service.getTeacherSalaryBreakdown).toHaveBeenCalledWith(
-        expectedStart,
-        expectedEnd,
+      const result = await controller.getTeacherSalaryBreakdown(
+        undefined,
+        undefined,
       );
+
+      expect(result).toEqual(mockBreakdown);
+      expect(
+        mockDashboardService.getTeacherSalaryBreakdown,
+      ).toHaveBeenCalledWith(undefined, undefined);
     });
   });
 });

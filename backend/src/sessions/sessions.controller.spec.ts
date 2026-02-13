@@ -5,7 +5,6 @@ import { CreateSessionDto } from './dto/request/create-session.dto';
 
 describe('SessionsController', () => {
   let controller: SessionsController;
-  let service: SessionsService;
 
   const mockSessionsService = {
     create: jest.fn(),
@@ -33,7 +32,6 @@ describe('SessionsController', () => {
     }).compile();
 
     controller = module.get<SessionsController>(SessionsController);
-    service = module.get<SessionsService>(SessionsService);
   });
 
   afterEach(() => {
@@ -65,7 +63,7 @@ describe('SessionsController', () => {
       const result = await controller.create(createSessionDto);
 
       expect(result).toEqual(mockSession);
-      expect(service.create).toHaveBeenCalledWith(createSessionDto);
+      expect(mockSessionsService.create).toHaveBeenCalledWith(createSessionDto);
     });
   });
 
@@ -91,7 +89,7 @@ describe('SessionsController', () => {
       const result = await controller.findAll();
 
       expect(result).toEqual(mockSessions);
-      expect(service.findAll).toHaveBeenCalledTimes(1);
+      expect(mockSessionsService.findAll).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -109,7 +107,7 @@ describe('SessionsController', () => {
       const result = await controller.findConfirmed();
 
       expect(result).toEqual(mockSessions);
-      expect(service.findConfirmed).toHaveBeenCalledTimes(1);
+      expect(mockSessionsService.findConfirmed).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -129,7 +127,7 @@ describe('SessionsController', () => {
       const result = await controller.findByTeacher(teacherId);
 
       expect(result).toEqual(mockSessions);
-      expect(service.findByTeacher).toHaveBeenCalledWith(teacherId);
+      expect(mockSessionsService.findByTeacher).toHaveBeenCalledWith(teacherId);
     });
   });
 
@@ -149,7 +147,7 @@ describe('SessionsController', () => {
       const result = await controller.findByPackage(packageId);
 
       expect(result).toEqual(mockSessions);
-      expect(service.findByPackage).toHaveBeenCalledWith(packageId);
+      expect(mockSessionsService.findByPackage).toHaveBeenCalledWith(packageId);
     });
   });
 
@@ -169,7 +167,7 @@ describe('SessionsController', () => {
       const result = await controller.findByDateRange(startDate, endDate);
 
       expect(result).toEqual(mockSessions);
-      expect(service.findByDateRange).toHaveBeenCalledWith(
+      expect(mockSessionsService.findByDateRange).toHaveBeenCalledWith(
         new Date(startDate),
         new Date(endDate),
       );
@@ -190,7 +188,7 @@ describe('SessionsController', () => {
       const result = await controller.findOne(id);
 
       expect(result).toEqual(mockSession);
-      expect(service.findOne).toHaveBeenCalledWith(id);
+      expect(mockSessionsService.findOne).toHaveBeenCalledWith(id);
     });
   });
 
@@ -214,7 +212,10 @@ describe('SessionsController', () => {
       const result = await controller.update(id, updateSessionDto);
 
       expect(result).toEqual(mockUpdatedSession);
-      expect(service.update).toHaveBeenCalledWith(id, updateSessionDto);
+      expect(mockSessionsService.update).toHaveBeenCalledWith(
+        id,
+        updateSessionDto,
+      );
     });
   });
 
@@ -231,7 +232,7 @@ describe('SessionsController', () => {
       const result = await controller.confirm(id);
 
       expect(result).toEqual(mockSession);
-      expect(service.confirm).toHaveBeenCalledWith(id);
+      expect(mockSessionsService.confirm).toHaveBeenCalledWith(id);
     });
   });
 
@@ -248,7 +249,7 @@ describe('SessionsController', () => {
       const result = await controller.unconfirm(id);
 
       expect(result).toEqual(mockSession);
-      expect(service.unconfirm).toHaveBeenCalledWith(id);
+      expect(mockSessionsService.unconfirm).toHaveBeenCalledWith(id);
     });
   });
 
@@ -259,8 +260,7 @@ describe('SessionsController', () => {
 
       await controller.remove(id);
 
-      expect(service.remove).toHaveBeenCalledWith(id);
+      expect(mockSessionsService.remove).toHaveBeenCalledWith(id);
     });
   });
 });
-
