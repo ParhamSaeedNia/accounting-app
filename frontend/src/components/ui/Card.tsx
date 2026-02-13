@@ -26,10 +26,10 @@ interface CardHeaderProps {
 
 export function CardHeader({ title, subtitle, action }: CardHeaderProps) {
   return (
-    <div className="flex items-center justify-between px-6 py-4 border-b border-dark-700">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 sm:px-6 py-4 border-b border-dark-700">
       <div>
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
-        {subtitle && <p className="text-sm text-dark-400 mt-0.5">{subtitle}</p>}
+        <h3 className="text-base sm:text-lg font-semibold text-white">{title}</h3>
+        {subtitle && <p className="text-xs sm:text-sm text-dark-400 mt-0.5">{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -37,6 +37,6 @@ export function CardHeader({ title, subtitle, action }: CardHeaderProps) {
 }
 
 export function CardContent({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <div className={`p-6 ${className}`}>{children}</div>;
+  return <div className={`p-4 sm:p-6 ${className}`}>{children}</div>;
 }
 

@@ -164,14 +164,14 @@ export default function Packages() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Packages</h1>
-          <p className="text-dark-400 mt-1">Manage your service packages</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Packages</h1>
+          <p className="text-dark-400 mt-1 text-sm sm:text-base">Manage your service packages</p>
         </div>
-        <Button onClick={() => openModal()}>
+        <Button onClick={() => openModal()} className="w-full sm:w-auto">
           <Plus className="w-4 h-4" />
-          Add Package
+          <span className="ml-2">Add Package</span>
         </Button>
       </div>
 

@@ -195,19 +195,19 @@ export default function Sessions() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Sessions</h1>
-          <p className="text-dark-400 mt-1">Track teaching sessions</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Sessions</h1>
+          <p className="text-dark-400 mt-1 text-sm sm:text-base">Track teaching sessions</p>
         </div>
-        <Button onClick={() => openModal()}>
+        <Button onClick={() => openModal()} className="w-full sm:w-auto">
           <Plus className="w-4 h-4" />
-          Add Session
+          <span className="ml-2">Add Session</span>
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
         <Select
           value={filterTeacher}
           onChange={(e) => setFilterTeacher(e.target.value)}
@@ -215,7 +215,7 @@ export default function Sessions() {
             { value: '', label: 'All Teachers' },
             ...teachers.map(t => ({ value: t._id, label: t.name })),
           ]}
-          className="w-48"
+          className="w-full sm:w-48"
         />
         <Select
           value={filterStatus}
@@ -225,21 +225,23 @@ export default function Sessions() {
             { value: 'confirmed', label: 'Confirmed' },
             { value: 'unconfirmed', label: 'Unconfirmed' },
           ]}
-          className="w-40"
+          className="w-full sm:w-40"
         />
-        <Input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="w-40"
-        />
-        <span className="text-dark-500">to</span>
-        <Input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="w-40"
-        />
+        <div className="flex items-center gap-2 flex-1 sm:flex-none">
+          <Input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="flex-1 sm:w-40"
+          />
+          <span className="text-dark-500 text-sm">to</span>
+          <Input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="flex-1 sm:w-40"
+          />
+        </div>
       </div>
 
       {/* Sessions Table */}

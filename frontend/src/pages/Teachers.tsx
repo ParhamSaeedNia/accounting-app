@@ -140,19 +140,19 @@ export default function Teachers() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Teachers</h1>
-          <p className="text-dark-400 mt-1">Manage your teaching staff</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Teachers</h1>
+          <p className="text-dark-400 mt-1 text-sm sm:text-base">Manage your teaching staff</p>
         </div>
-        <Button onClick={() => openModal()}>
+        <Button onClick={() => openModal()} className="w-full sm:w-auto">
           <Plus className="w-4 h-4" />
-          Add Teacher
+          <span className="ml-2">Add Teacher</span>
         </Button>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="p-4 bg-dark-900 border border-dark-700 rounded-xl">
           <p className="text-xs text-dark-400 uppercase tracking-wider mb-1">Total Teachers</p>
           <p className="text-2xl font-bold text-white">{teachers.length}</p>

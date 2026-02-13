@@ -174,27 +174,27 @@ export default function Transactions() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Transactions</h1>
-          <p className="text-dark-400 mt-1">Track income and expenses</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Transactions</h1>
+          <p className="text-dark-400 mt-1 text-sm sm:text-base">Track income and expenses</p>
         </div>
-        <Button onClick={() => openModal()}>
+        <Button onClick={() => openModal()} className="w-full sm:w-auto">
           <Plus className="w-4 h-4" />
-          Add Transaction
+          <span className="ml-2">Add Transaction</span>
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
+        <div className="relative flex-1 sm:flex-none">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-500" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search..."
-            className="pl-10 pr-4 py-2.5 bg-dark-800 border border-dark-600 rounded-lg text-white placeholder-dark-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors w-64"
+            className="pl-10 pr-4 py-2.5 bg-dark-800 border border-dark-600 rounded-lg text-white placeholder-dark-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors w-full sm:w-64"
           />
         </div>
         <Select
@@ -205,7 +205,7 @@ export default function Transactions() {
             { value: 'income', label: 'Income' },
             { value: 'expense', label: 'Expense' },
           ]}
-          className="w-36"
+          className="w-full sm:w-36"
         />
         <Select
           value={filterStatus}
@@ -215,21 +215,23 @@ export default function Transactions() {
             { value: 'active', label: 'Active' },
             { value: 'excluded', label: 'Excluded' },
           ]}
-          className="w-36"
+          className="w-full sm:w-36"
         />
-        <Input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="w-40"
-        />
-        <span className="text-dark-500">to</span>
-        <Input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="w-40"
-        />
+        <div className="flex items-center gap-2 flex-1 sm:flex-none">
+          <Input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="flex-1 sm:w-40"
+          />
+          <span className="text-dark-500 text-sm">to</span>
+          <Input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="flex-1 sm:w-40"
+          />
+        </div>
       </div>
 
       {/* Transactions Table */}

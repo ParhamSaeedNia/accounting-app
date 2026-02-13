@@ -37,14 +37,14 @@ export default function Modal({ isOpen, onClose, title, children, footer, size =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4">
       <div 
         className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
       />
-      <div className={`relative w-full ${sizes[size]} bg-dark-900 border border-dark-700 rounded-2xl shadow-2xl animate-slide-up`}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-dark-700">
-          <h2 className="text-lg font-semibold text-white">{title}</h2>
+      <div className={`relative w-full h-full sm:h-auto sm:max-h-[90vh] ${sizes[size]} bg-dark-900 border-0 sm:border border-dark-700 rounded-none sm:rounded-2xl shadow-2xl animate-slide-up flex flex-col`}>
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-dark-700">
+          <h2 className="text-base sm:text-lg font-semibold text-white">{title}</h2>
           <button
             onClick={onClose}
             className="p-2 text-dark-400 hover:text-white hover:bg-dark-800 rounded-lg transition-colors"
@@ -52,11 +52,11 @@ export default function Modal({ isOpen, onClose, title, children, footer, size =
             <X className="w-5 h-5" />
           </button>
         </div>
-        <div className="px-6 py-5 max-h-[70vh] overflow-y-auto">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 flex-1 overflow-y-auto">
           {children}
         </div>
         {footer && (
-          <div className="flex justify-end gap-3 px-6 py-4 border-t border-dark-700 bg-dark-800/50 rounded-b-2xl">
+          <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 px-4 sm:px-6 py-4 border-t border-dark-700 bg-dark-800/50 rounded-b-none sm:rounded-b-2xl">
             {footer}
           </div>
         )}

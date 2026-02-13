@@ -88,41 +88,45 @@ export default function Dashboard() {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-          <p className="text-dark-400 mt-1">Financial overview and key metrics</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Dashboard</h1>
+          <p className="text-dark-400 mt-1 text-sm sm:text-base">Financial overview and key metrics</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="w-40"
-            placeholder="Start date"
-          />
-          <span className="text-dark-500">to</span>
-          <Input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="w-40"
-            placeholder="End date"
-          />
-          <Button onClick={applyFilters} disabled={loading}>
-            Apply
-          </Button>
-          {hasFilters && (
-            <Button variant="ghost" onClick={clearFilters} disabled={loading}>
-              <X className="w-4 h-4" />
-              Clear
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-1">
+            <Input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full sm:w-40"
+              placeholder="Start date"
+            />
+            <span className="text-dark-500 hidden sm:inline">to</span>
+            <Input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full sm:w-40"
+              placeholder="End date"
+            />
+          </div>
+          <div className="flex gap-2">
+            <Button onClick={applyFilters} disabled={loading} className="flex-1 sm:flex-none">
+              Apply
             </Button>
-          )}
+            {hasFilters && (
+              <Button variant="ghost" onClick={clearFilters} disabled={loading} className="px-3">
+                <X className="w-4 h-4" />
+                <span className="sr-only sm:not-sr-only sm:ml-2">Clear</span>
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <StatCard
           label="Total Income"
           value={formatMoney(dashboard?.totalIncome || 0)}
@@ -150,7 +154,7 @@ export default function Dashboard() {
       </div>
 
       {/* Secondary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <StatCard
           label="Teacher Salaries"
           value={formatMoney(dashboard?.totalTeacherSalaries || 0)}
@@ -175,7 +179,7 @@ export default function Dashboard() {
       </div>
 
       {/* Category Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Income by Category */}
         <Card>
           <CardHeader title="Income by Category" />

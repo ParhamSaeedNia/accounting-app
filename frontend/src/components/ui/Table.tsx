@@ -7,7 +7,7 @@ interface TableProps {
 export function Table({ children }: TableProps) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full">{children}</table>
+      <table className="min-w-full divide-y divide-dark-700">{children}</table>
     </div>
   );
 }
@@ -33,7 +33,7 @@ export function TableRow({ children, onClick }: { children: ReactNode; onClick?:
 
 export function TableHead({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <th className={`px-4 py-3 text-left text-xs font-medium text-dark-400 uppercase tracking-wider ${className}`}>
+    <th className={`px-3 sm:px-4 py-3 text-left text-xs font-medium text-dark-400 uppercase tracking-wider whitespace-nowrap ${className}`}>
       {children}
     </th>
   );
@@ -41,7 +41,7 @@ export function TableHead({ children, className = '' }: { children: ReactNode; c
 
 export function TableCell({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <td className={`px-4 py-4 text-sm text-dark-200 ${className}`}>
+    <td className={`px-3 sm:px-4 py-3 sm:py-4 text-sm text-dark-200 ${className}`}>
       {children}
     </td>
   );
@@ -50,7 +50,7 @@ export function TableCell({ children, className = '' }: { children: ReactNode; c
 export function TableEmpty({ message = 'No data found', colSpan = 1 }: { message?: string; colSpan?: number }) {
   return (
     <tr>
-      <td colSpan={colSpan} className="px-4 py-12 text-center text-dark-500">
+      <td colSpan={colSpan} className="px-4 py-8 sm:py-12 text-center text-dark-500 text-sm sm:text-base">
         {message}
       </td>
     </tr>
